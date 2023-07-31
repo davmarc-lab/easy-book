@@ -1,1 +1,1 @@
-<?php $conn = new mysqli("127.0.0.1", "root", "", "easybook") ?>
+<?php $conn = new mysqli("127.0.0.1", "root", "password", "easybook"); ?>
