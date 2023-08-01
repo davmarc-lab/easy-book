@@ -3,9 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="style/style.css"> -->
     <title>Easy Book</title>
-    <link rel="stylesheet" href="style/style.css">
 </head>
+<style>
+    table, th {
+        border:1px solid black;
+        border-collapse: collapse;
+        color: red;
+    }
+
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        color: black;
+        text-indent: 4px;
+    }
+
+
+</style>
 <body>
     <h1>Easy Book</h1>
     <h3>Check our list of destination for your vacation and book it.</h3>
@@ -18,6 +34,7 @@
     <?php
         session_start();
         include_once("database/dbConnection.php");
+        $conn = OpenCon();
         if (isset($_SESSION["user_id"])){               // se settato l' array superglobale $_SESSION vuol dire che è stato effettuato il login
           echo ("Hello ".$_SESSION["name"]." | <a href=\"user/logout.php\">Logout</a> </login>");
           $user = $_SESSION["name"];
@@ -27,20 +44,29 @@
       <a href="user/register.php">Sign Up</a>
     <?php } ?>
     <hr>
-
     <h2>All agencies</h2>
     <agency>
-        <table style = "width: 40%">
+        <table style = "width: 70%">
             <tr>
                 <th style = "width: 40%">Name</th>
-                <th style = "width: 30%">Number of travels</th>
-                <th>Reviews</th>
+                <th>Owner</th>
+                <th>Contact</th>
+                <th style = "width: 15%">Number of Travels</th>
             </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
+                <?php
+                    // restituisce le informazioni principali per ogni agenzia iscritta alla piattaforma
+                    $query = 'SELECT *, (SELECT COUNT(v.id) FROM viaggio as v WHERE v.id_agenzia = a.id) AS nt FROM agenzia AS a';
+                    $res = $conn -> query($query);
+                    foreach ($res as $r) {
+                        echo("<tr>");
+                        echo("<td>".$r["nome"]."</td>");
+                        echo("<td>".$r["proprietario"]."</td>");
+                        echo("<td>".$r["telefono"]."</td>");
+                        echo("<td style = \"text-align: center\">".$r["nt"]."</td>");
+                        echo("</tr>");
+                    }
+                ?>
+
         </table>
     </agency>
 
