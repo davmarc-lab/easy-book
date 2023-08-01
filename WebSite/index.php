@@ -36,8 +36,7 @@
         include_once("database/dbConnection.php");
         $conn = OpenCon();
         if (isset($_SESSION["user_id"])){               // se settato l' array superglobale $_SESSION vuol dire che è stato effettuato il login
-          echo ("Hello ".$_SESSION["name"]." | <a href=\"user/logout.php\">Logout</a> </login>");
-          $user = $_SESSION["name"];
+          echo ("Hello ".$_SESSION["name"]." | <a href=\"user/logout.php\">Logout</a>");
         }else{
       ?>
       <a href="user/login.php">Login</a> |

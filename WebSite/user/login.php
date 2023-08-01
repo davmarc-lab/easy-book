@@ -36,19 +36,24 @@
 
                 if (empty($_SESSION["user_id"])) {
                     if (isset($_POST["email"]) && isset($_POST["pass"])) {
-                        $userQuery = 'SELECT id, nome FROM cliente AS c WHERE c.email = \''.$email.'\'
-                                AND c.password = \''.password_hash($inputPass, PASSWORD_DEFAULT).'\'';
+                        $userQuery = 'SELECT id, nome, email, password FROM cliente AS c WHERE c.email = \''.$email.'\';';
                         $res = $mysql -> query($userQuery);
 
                         if ($res -> num_rows != 0) {
                             foreach ($res as $r) {
                                 $id = $r["id"];
                                 $name = $r["nome"];
+                                $dbEmail = $r["email"];
+                                $dbPass = $r["password"];
                             }
-                            echo("Login successfull.<br>");
-                            $_SESSION["nome"] = $name;
-                            $_SESSION["user_id"] = $id;
-                            header("location:../index.php");
+                            if (password_verify($inputPass, $dbPass)) {
+                                echo("Login successfull.<br>");
+                                $_SESSION["name"] = $name;
+                                $_SESSION["user_id"] = $id;
+                                header("location:../index.php");
+                            } else {
+                                echo("The input email doesn't exist.<br><a href=\"login.php\">Go back</a><br>");
+                            }
                         } else {
                             echo("OGNI VOLTA CHE SI FA L'HASH È SEMPRE DIVERSO NON SO PERCHÉ<br>");
                         }

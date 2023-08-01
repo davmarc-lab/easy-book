@@ -65,6 +65,7 @@
                 $error = true;
             }
             $email = $_POST["email"];
+            echo($email.' ');
             // check if email already exist in database
             $email_query = 'SELECT c.email FROM cliente AS c WHERE c.email = \''.$email.'\'';
             $res = $mysql -> query($email_query);
@@ -73,6 +74,7 @@
                 $error = true;
             }
             $pass = $_POST["pass"];
+            echo($pass.' ');
             // check password validity
             if (!preg_match($passPattern, $pass)) {
                 echo("The password is invalid, max 8 characters<br>");
