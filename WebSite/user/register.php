@@ -67,7 +67,7 @@
             $email = $_POST["email"];
             echo($email.' ');
             // check if email already exist in database
-            $email_query = 'SELECT c.email FROM cliente AS c WHERE c.email = \''.$email.'\'';
+            $email_query = 'SELECT u.email FROM utente AS u WHERE u.email = \''.$email.'\'';
             $res = $mysql -> query($email_query);
             if ($res -> num_rows > 0) {
                 echo("The email is already in use.<br>");
@@ -85,7 +85,7 @@
                 echo("<a href=\"register.php\">Go back</a><br>");
                 echo("<a href=\"../index.php\">Home Page</a><br>");
             } else {
-                $insert_query = 'INSERT INTO cliente (nome, cognome, telefono, email, password)
+                $insert_query = 'INSERT INTO utente (nome, cognome, telefono, email, password)
                         VALUES(\''.$first.'\', \''.$last.'\', \''.$tel.'\', \''.$email.'\', \''.password_hash($pass, PASSWORD_DEFAULT).'\');';
                 $mysql -> query($insert_query);
                 echo("You can now do the <a href=\"login.php\">Login</a>.<br>");

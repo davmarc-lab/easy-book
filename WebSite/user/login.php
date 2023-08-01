@@ -36,7 +36,7 @@
 
                 if (empty($_SESSION["user_id"])) {
                     if (isset($_POST["email"]) && isset($_POST["pass"])) {
-                        $userQuery = 'SELECT id, nome, email, password FROM cliente AS c WHERE c.email = \''.$email.'\';';
+                        $userQuery = 'SELECT id, nome, email, password FROM utente AS u WHERE u.email = \''.$email.'\';';
                         $res = $mysql -> query($userQuery);
 
                         if ($res -> num_rows != 0) {
