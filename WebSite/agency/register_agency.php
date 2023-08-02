@@ -58,7 +58,7 @@
             }
             $city = $_POST["city"];
             // check city name validity
-            if (!preg_match($namePattern, $city)) {
+            if (!preg_match($namePattern, $city) && mb_strlen($city) > 0) {
                 echo("The city name is not valid, use only letters and max 100 characters.<br>");
                 $error = true;
             }
@@ -77,9 +77,9 @@
                 echo("<a href=\"register_agency.php\">Go back</a><br>");
                 echo("<a href=\"../index.php\">Home Page</a><br>");
             } else {
-                $insert_query = 'INSERT INTO utente (nome, proprietario, sedeFisica, telefono, email)
+                $insert_query = 'INSERT INTO agenzia (nome, proprietario, sedeFisica, telefono, email)
                         VALUES(\''.$name.'\', \''.$owner.'\', \''.$city.'\', \''.$tel.'\', \''.$email.'\');';
-                // $mysql -> query($insert_query);
+                $mysql -> query($insert_query);
                 echo("Agency signed correctly. You can now <a href=\"../index.php\">Go Back</a><br>");
             }
         } ?>

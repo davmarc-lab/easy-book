@@ -91,7 +91,10 @@
             </tr>
         </table>
     </travel>
-    <hr>
-    <h2>Are you an agency? <a href="agency/register_agency.php">Click here</a> to create an agency and start organize vacations.</h2>
+    <?php
+        if (isset($_SESSION["user_id"])){
+            echo ("<hr><h2>Are you an agency? <a href=\"agency/register_agency.php\">Click here</a> to create an agency and start organize vacations.</h2>");
+        }
+    ?>
 </body>
 </html>
