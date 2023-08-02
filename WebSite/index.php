@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="style/style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="style/style.css"> -->
     <title>Easy Book</title>
 </head>
 <style>
@@ -29,28 +29,25 @@
     <p>The rules are simple, if you want to book a vacation you have to sign up or do login, you have to be signed on the platform. <br>
         &emsp;After you can do whatever tou want and book how many vacation you can afford.
     </p>
-
     <?php
         session_start();
         include_once("database/dbConnection.php");
         $conn = OpenCon();
-        if (isset($_SESSION["user_id"])){               // se settato l' array superglobale $_SESSION vuol dire che è stato effettuato il login
-          echo ("Hello ".$_SESSION["name"]." | <a href=\"agency/homepage_agency.php\">Agency</a> | <a href=\"user/logout.php\">Logout</a>");
-        }else{
-            ?>
-            <p>If you already have an account press the Login button, instead you can press the Sign Up button to create an account.</p>
-            <a href="user/login.php">Login</a> |
-            <a href="user/register.php">Sign Up</a>
-    <?php } ?>
+        if (!isset($_SESSION["id"])){
+            echo("If you already have an account press the Login button, instead you can press the Sign Up button to create an account.");
+        }
+        PrintLoginInfo();
+        ?>
     <hr>
     <h2>All agencies</h2>
-    <agency>
-        <table style = "width: 70%">
+    <agency style="overflow-y: auto;" >
+        <table style = "width: 70%; height: 7px">
             <tr>
                 <th style = "width: 40%">Name</th>
                 <th>Owner</th>
                 <th>Contact</th>
                 <th style = "width: 15%">Number of Travels</th>
+                <th>Link</th>
             </tr>
                 <?php
                     // restituisce le informazioni principali per ogni agenzia iscritta alla piattaforma
@@ -62,6 +59,13 @@
                         echo("<td>".$r["proprietario"]."</td>");
                         echo("<td>".$r["telefono"]."</td>");
                         echo("<td style = \"text-align: center\">".$r["nt"]."</td>");
+                        ?>
+                        <td style="text-align: center">
+                            <form action="agency/info_agency.php" method="get">
+                                <button style="cursor: pointer;" type="submit" name="agency" value="<?php echo($r["nome"]); ?>">Go</button>
+                            </form>
+                        </td>
+                        <?php
                         echo("</tr>");
                     }
                 ?>
@@ -93,9 +97,10 @@
     </travel>
 </body>
 <footer>
+    <hr>
     <?php
-        if (isset($_SESSION["user_id"])){
-            echo ("<hr><h2>Are you an agency? <a href=\"agency/register_agency.php\">Click here</a> to create an agency and start organize vacations.</h2>");
+        if (isset($_SESSION["id"])){
+            echo ("<h2>Are you an agency? <a href=\"agency/register_agency.php\">Click here</a> to create an agency and start organize vacations.</h2>");
         }
     ?>
 </footer>

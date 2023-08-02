@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="../style/style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="style/style.css"> -->
     <title>Easy Book</title>
 </head>
 
@@ -37,7 +37,6 @@
             <input type="submit" name="submit" value="Confirm">
             <input type="reset" value="Clear">
         </form>
-        <a href="../index.php">HomePage</a>
         <?php } else {
             include_once("../database/dbConnection.php");
             $mysql = OpenCon();
@@ -83,15 +82,19 @@
             
             if ($error == true) {
                 echo("<a href=\"register.php\">Go back</a><br>");
-                echo("<a href=\"../index.php\">Home Page</a><br>");
             } else {
                 $insert_query = 'INSERT INTO utente (nome, cognome, telefono, email, password)
                         VALUES(\''.$first.'\', \''.$last.'\', \''.$tel.'\', \''.$email.'\', \''.password_hash($pass, PASSWORD_DEFAULT).'\');';
                 $mysql -> query($insert_query);
                 echo("You can now do the <a href=\"login.php\">Login</a>.<br>");
-                echo("<a href=\"../index.php\">Home Page</a><br>");
             }
         } ?>
 
 </body>
+<footer>
+    <hr>
+    <div class="login">
+        <a href="../index.php">HomePage</a>
+    </div>
+</footer>
 </html>
