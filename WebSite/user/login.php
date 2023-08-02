@@ -23,7 +23,7 @@
                         <td><input type="password" placeholder="Password" name = "pass" required> <p>Please max 8 character</p></td>                
                     </tr>
                 </table>
-                <input type="submit" name="submit" value="login">
+                <input type="submit" name="submit" value="Login">
                 <input type="reset" value="Clear">
             </form>
             <a href="../index.php">HomePage</a>
@@ -33,6 +33,7 @@
                 $mysql = OpenCon();
                 $email = $_POST["email"];
                 $inputPass = $_POST["pass"];
+                $admin = "";
 
                 if (empty($_SESSION["user_id"])) {
                     if (isset($_POST["email"]) && isset($_POST["pass"])) {
@@ -50,16 +51,25 @@
                                 echo("Login successfull.<br>");
                                 $_SESSION["name"] = $name;
                                 $_SESSION["user_id"] = $id;
-                                header("location:../index.php");
+
+                                $admin_query = 'SELECT u.email AS email FROM amministratore AS a, utente AS u WHERE u.id = a.id_utente AND a.dataRitiro IS NULL;';
+                                $res = $mysql -> query($admin_query);
+                                foreach ($res as $x) {
+                                    $admin = $x["email"];
+                                }
+                                if ($admin == $email) {
+                                    header("location:../admin/homepage_admin.php");
+                                } else {
+                                    header("location:../index.php");
+                                }
                             } else {
-                                echo("The input email doesn't exist.<br><a href=\"login.php\">Go back</a><br>");
+                                echo("The password is incorrect.<br><a href=\"login.php\">Go back</a><br>");
                             }
                         } else {
-                            echo("OGNI VOLTA CHE SI FA L'HASH È SEMPRE DIVERSO NON SO PERCHÉ<br>");
+                            echo("The password doesn't exist.<br><a href=\"login.php\">Go back</a><br>");
                         }
                     }
                 }
-                
             } ?>
 
 </body>

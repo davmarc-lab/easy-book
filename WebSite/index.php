@@ -29,18 +29,18 @@
     <p>The rules are simple, if you want to book a vacation you have to sign up or do login, you have to be signed on the platform. <br>
         &emsp;After you can do whatever tou want and book how many vacation you can afford.
     </p>
-    <p>If you already have an account press the Login button, instead you can press the Sign Up button to create an account.</p>
 
     <?php
         session_start();
         include_once("database/dbConnection.php");
         $conn = OpenCon();
         if (isset($_SESSION["user_id"])){               // se settato l' array superglobale $_SESSION vuol dire che è stato effettuato il login
-          echo ("Hello ".$_SESSION["name"]." | <a href=\"user/logout.php\">Logout</a>");
+          echo ("Hello ".$_SESSION["name"]." | <a href=\"agency/homepage_agency.php\">Agency</a> | <a href=\"user/logout.php\">Logout</a>");
         }else{
-      ?>
-      <a href="user/login.php">Login</a> |
-      <a href="user/register.php">Sign Up</a>
+            ?>
+            <p>If you already have an account press the Login button, instead you can press the Sign Up button to create an account.</p>
+            <a href="user/login.php">Login</a> |
+            <a href="user/register.php">Sign Up</a>
     <?php } ?>
     <hr>
     <h2>All agencies</h2>
@@ -91,10 +91,12 @@
             </tr>
         </table>
     </travel>
+</body>
+<footer>
     <?php
         if (isset($_SESSION["user_id"])){
             echo ("<hr><h2>Are you an agency? <a href=\"agency/register_agency.php\">Click here</a> to create an agency and start organize vacations.</h2>");
         }
     ?>
-</body>
+</footer>
 </html>
