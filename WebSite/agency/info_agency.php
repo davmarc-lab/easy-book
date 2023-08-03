@@ -46,13 +46,41 @@
         }
         include_once("../database/dbConnection.php");
         $conn = OpenCon();
-        $agency_query = 'SELECT nome FROM agenzia AS a WHERE a.nome = \''.$_GET["agency"].'\' ;';
+        $_SESSION["agency"] = $_GET["agency"];
+        $agency_query = 'SELECT id, nome FROM agenzia AS a WHERE a.nome = \''.$_GET["agency"].'\' ;';
         $res = $conn -> query($agency_query);
-        $agency = ($res -> fetch_array())["nome"];
+        $res = $res -> fetch_array();
+        $agency = $res["nome"];
+        $id_agency = $res["id"];
         echo("<hr><h2>{$agency}</h2>");
     ?>
-
+    <h3>Employees</h3>
+    <table style="max-width: 70%">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contract</th>
+            <th>Operations</th>
+        </tr>
+            <?php
+                $query = 'SELECT u.nome AS nome, u.email AS email, a.tipoContratto AS contratto FROM utente AS u, agenzia_utente AS a
+                        WHERE a.id_agenzia = \''.$id_agency.'\' AND u.id IN
+                                (SELECT id_utente FROM agenzia_utente WHERE agenzia_utente.id_agenzia = \''.$id_agency.'\')
+                        AND u.id = a.id_utente';
+                $res = $conn -> query($query);
+                foreach ($res as $r) {
+                    echo("<tr>");
+                    echo("<td>".$r["nome"]."</td>");
+                    echo("<td>".$r["email"]."</td>");
+                    echo("<td style = \"text-align: center\">".$r["contratto"]."</td>");
+                    echo("<td style=\"text-align: center\"><form action=\"operation/remove_employee.php\" method=\"post\"><button type=\"submit\" name=\"email\"value=\"".$r["email"]."\">Remove</button></form>
+                        <input type=\"button\" onclick=\"location.href='agency/operations/remove_employee.php'\" value=\"Modify\"></td>");
+                    echo("</tr>");
+                }
+            ?>
+    </table>
     
+    <input type="button" onclick="location.href='gg.php'" value="GG">
 
 </body>
 <footer>
