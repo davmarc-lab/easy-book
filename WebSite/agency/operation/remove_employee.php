@@ -11,12 +11,14 @@
     <h3>Removing Employee</h3>
     <?php 
         session_start();
-
-        echo($_SESSION["agency"]); ?>
-    <?php echo("<b>Are you sure you want to remove <txt style=\"color: red\">".$_POST["email"]."</txt>? He would not be able to manage your agency anymore.</b><br>"); ?>
-    <button onclick="" style="color: red;">Remove</button>
-    <?php
-        $agency_name = str_replace(' ', '+', $_SESSION["agency"]); 
+        include_once("../../database/dbConnection.php");
+        $conn = OpenCon();
+        $uemail = $_POST["email"];
+        echo("<b>Are you sure you want to remove <txt style=\"color: red\">".$uemail."</txt>? He would not be able to manage your agency anymore.</b><br><br>");
+        $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
+        echo("<form action=\"remove.php\" method=\"post\">
+            <button type=\"submit\" name=\"uemail\" value=\"{$uemail}\" style=\"color: red;\">Remove</button>
+            </form>");
         echo("<button onclick=\"location.href='../info_agency.php?agency={$agency_name}'\">Go back</button>");
     ?>
     
