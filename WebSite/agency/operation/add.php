@@ -28,6 +28,7 @@
     <?php
         session_start();
         include_once("../../database/dbConnection.php");
+        $conn = OpenCon();
         if (isset($_SESSION["id"])) {
             ?>
                 <div class="login">
@@ -40,6 +41,35 @@
     ?>
     <hr>
     <h2>Add information</h2>
+        <table style="max-width: 70%; min-width: 50%">
+            <tr>
+                <th>Email</th>
+                <th>Type of Contract</th>
+                <th>End of Contract</th>
+            </tr>
+            <form action="check.php" method="post">
+                <?php
+                    $users = $_POST["user"];
+                    $i = 0;
+                    foreach ($users as $x) {
+                        $info = $conn -> query('SELECT * FROM utente AS u WHERE u.id = \''.$x.'\'') -> fetch_array();
+                        echo("<tr>");
+                        echo("<td>".$info["email"]."</td>");
+                        echo("<td><input type=\"text\" name=\"meta[{$i}][contract]\" placeholder=\"Type of contract\" required></td>");
+                        echo("<td><input type=\"date\" name=\"meta[{$i}][date]\" placeholder=\"End of contract\"></td>");
+                        echo("</tr>");
+                        echo("<input type=\"hidden\" name=\"meta[{$i}][userid]\" value=\"{$info["id"]}\">");
+                        $ag_query = 'SELECT a.id FROM agenzia AS a WHERE a.nome = \''.$_SESSION["agency"].'\'';
+                        $ag_id = $conn -> query($ag_query) -> fetch_array();
+                        $_POST[$i]["id"] = $i;
+                        $i++;
+
+                    }
+                ?>
+            
+        </table>
+        <input type="submit" name="submit" value="Submit">
+        </form>
     <?php
         // for the go back link
         $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
