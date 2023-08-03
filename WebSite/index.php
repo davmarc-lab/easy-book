@@ -19,8 +19,6 @@
         color: black;
         text-indent: 4px;
     }
-
-
 </style>
 <body>
     <h1>Easy Book</h1>

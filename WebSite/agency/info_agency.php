@@ -22,7 +22,6 @@
         color: black;
         width: auto;
     }
-
 </style>
 <body>
     <h1>Easy Book</h1>
@@ -79,8 +78,10 @@
                 }
             ?>
     </table>
-    
-    <input type="button" onclick="location.href='gg.php'" value="GG">
+    <br>
+    <form action="operation/add_employee.php" method="get">
+    <button type="submit" name="agency" value="<?php echo($agency) ?>">Add</button>
+    </form>
 
 </body>
 <footer>

@@ -6,6 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Easy Book</title>
 </head>
+<style>
+    table, th {
+        border:1px solid black;
+        border-collapse: collapse;
+        color: red;
+        width: auto;
+    }
+
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding-left: 10px;
+        padding-right: 10px;
+        color: black;
+        width: auto;
+    }
+</style>
 <body>
     <h1>Easy Book</h1>
     <?php
@@ -22,20 +39,12 @@
         }
     ?>
     <hr>
-    <h3>Removing Employee</h3>
-    <?php 
-        session_start();
-        include_once("../../database/dbConnection.php");
-        $conn = OpenCon();
-        $uemail = $_POST["email"];
-        echo("<b>Are you sure you want to remove <txt style=\"color: red\">".$uemail."</txt>? He would not be able to manage your agency anymore.</b><br><br>");
+    <h2>Add information</h2>
+    <?php
+        // for the go back link
         $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
-        echo("<form action=\"remove.php\" method=\"post\">
-            <button type=\"submit\" name=\"uemail\" value=\"{$uemail}\" style=\"color: red;\">Remove</button>
-            </form>");
         echo("<button onclick=\"location.href='../info_agency.php?agency={$agency_name}'\">Go back</button>");
     ?>
-    
 </body>
 <footer>
     <hr>
