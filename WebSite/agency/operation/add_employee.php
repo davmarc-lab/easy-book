@@ -54,11 +54,23 @@
         </tr>
         <form action="add.php" method="post">
             <?php
-                $query = 'SELECT u.id AS id, u.nome AS nome, u.cognome AS cognome, u.email AS email, (SELECT COUNT(a.id) FROM agenzia_utente AS a WHERE a.id_utente = u.id) AS num,
+                $ag_query = 'SELECT a.id FROM agenzia AS a WHERE a.nome = \''.$_SESSION["agency"].'\'';
+                $ag = $conn -> query($ag_query) -> fetch_array();
+                $ag = $ag["id"];             // agency id
+
+                $email_query = 'SELECT u.email FROM utente AS u WHERE u.id = \''.$_SESSION["id"].'\'';
+                $ow_email = $conn -> query($email_query) -> fetch_array();
+                $ow_email = $ow_email["email"];             // agency id
+
+                $empl_query = 'SELECT u.id AS id, u.nome AS nome, u.cognome AS cognome, u.email AS email, (SELECT COUNT(a.id) FROM agenzia_utente AS a WHERE a.id_utente = u.id) AS num,
                             (SELECT COUNT(a.id) FROM agenzia AS a WHERE a.email = u.email) AS own
-                        FROM utente AS u, agenzia_utente AS a
-                        WHERE u.id != a.id_utente';
-                $res = $conn -> query($query);
+                        FROM utente AS u, agenzia_utente AS au, agenzia AS a
+                        WHERE u.id NOT IN (SELECT au.id_utente FROM agenzia_utente AS au, utente as us WHERE us.id = au.id_utente AND au.id_agenzia = \''.$ag.'\')
+                        AND u.id != \''.$_SESSION["id"].'\'
+                        AND a.email != \''.$ow_email.'\'
+                        GROUP BY u.id;';
+                $res = $conn -> query($empl_query);
+
                 foreach ($res as $r) {
                     echo("<tr>");
                     echo("<td>".$r["nome"]."</td>");
@@ -67,7 +79,7 @@
 
                     $num = intval($r["num"]) > 0 ? $r["num"] : "No";
                     echo("<td style=\"text-align: center\">".$num."</td>");
-                    
+
                     $own = $r["own"] > 0 ? $r["own"] : "No";
                     echo("<td style=\"text-align: center\">".$own."</td>");
                     echo("<td style=\"text-align: center\"><input type=\"checkbox\" name=\"user[]\" value=\"{$r["id"]}\" /></td>");
