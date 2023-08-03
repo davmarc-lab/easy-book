@@ -61,9 +61,7 @@
                         echo("<input type=\"hidden\" name=\"meta[{$i}][userid]\" value=\"{$info["id"]}\">");
                         $ag_query = 'SELECT a.id FROM agenzia AS a WHERE a.nome = \''.$_SESSION["agency"].'\'';
                         $ag_id = $conn -> query($ag_query) -> fetch_array();
-                        $_POST[$i]["id"] = $i;
                         $i++;
-
                     }
                 ?>
             

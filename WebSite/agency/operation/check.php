@@ -8,9 +8,17 @@
     $meta = $_POST["meta"];
 
     foreach ($meta as $x) {
-        $date = $x["date"] == '' ? "NULL" : $x["date"];
+        $date = $x["date"];
+        if ($date != '') {
+            $tmp = explode('-', $date);
+            $date = "$tmp[2]-$tmp[1]-$tmp[0]";
+            $date = date("Y-m-d", strtotime($date));
+        } else {
+            $date = "NULL";
+        }
         $insert_query = "INSERT INTO agenzia_utente (tipoContratto, scadenza, id_agenzia, id_utente)
-                VALUES ('{$x["contract"]}', {$date}, '{$ag}', '{$x["userid"]}')";
+                VALUES ('{$x["contract"]}', ".($date != "NULL" ? ("'{$date}'") : $date).", '{$ag}', '{$x["userid"]}')";
+        echo("{$date}");
         $res = $conn -> query($insert_query);
     }
 

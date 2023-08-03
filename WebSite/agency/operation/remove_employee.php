@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <link rel="stylesheet" href="../../style/style.css">
     <meta charset="UTF-8">
@@ -24,8 +24,6 @@
     <hr>
     <h3>Removing Employee</h3>
     <?php 
-        session_start();
-        include_once("../../database/dbConnection.php");
         $conn = OpenCon();
         $uemail = $_POST["email"];
         echo("<b>Are you sure you want to remove <txt style=\"color: red\">".$uemail."</txt>? He would not be able to manage your agency anymore.</b><br><br>");
