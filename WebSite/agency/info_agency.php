@@ -26,6 +26,14 @@
 <body>
     <h1>Easy Book</h1>
     <?php
+        function contains($str, array $arr)
+        {
+            foreach($arr as $a) {
+                if (stripos($str,$a) !== false) return true;
+            }
+            return false;
+        }
+
         session_start();
         if (isset($_SESSION["id"])) {
             ?>
@@ -46,42 +54,63 @@
         include_once("../database/dbConnection.php");
         $conn = OpenCon();
         $_SESSION["agency"] = $_GET["agency"];
-        $agency_query = 'SELECT id, nome FROM agenzia AS a WHERE a.nome = \''.$_GET["agency"].'\' ;';
+
+        $agency_query = 'SELECT * FROM agenzia AS a WHERE a.nome = \''.$_GET["agency"].'\' ;';
         $res = $conn -> query($agency_query);
         $res = $res -> fetch_array();
         $agency = $res["nome"];
+        $ow_email = $res["email"];
         $id_agency = $res["id"];
         echo("<hr><h2>{$agency}</h2>");
-    ?>
-    <h3>Employees</h3>
-    <table style="max-width: 70%">
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Contract</th>
-            <th>Operations</th>
-        </tr>
-            <?php
-                $query = 'SELECT u.nome AS nome, u.email AS email, a.tipoContratto AS contratto FROM utente AS u, agenzia_utente AS a
-                        WHERE a.id_agenzia = \''.$id_agency.'\' AND u.id IN
-                                (SELECT id_utente FROM agenzia_utente WHERE agenzia_utente.id_agenzia = \''.$id_agency.'\')
-                        AND u.id = a.id_utente';
-                $res = $conn -> query($query);
-                foreach ($res as $r) {
-                    echo("<tr>");
-                    echo("<td>".$r["nome"]."</td>");
-                    echo("<td>".$r["email"]."</td>");
-                    echo("<td style = \"text-align: center\">".$r["contratto"]."</td>");
-                    echo("<td style=\"text-align: center\"><form action=\"operation/remove_employee.php\" method=\"post\"><button type=\"submit\" name=\"email\"value=\"".$r["email"]."\">Remove</button></form>
-                        <input type=\"button\" onclick=\"location.href='agency/operations/remove_employee.php'\" value=\"Modify\"></td>");
-                    echo("</tr>");
-                }
+
+        $us_query = 'SELECT * FROM utente AS u WHERE u.id = \''.$_SESSION["id"].'\';';
+        $us = $conn -> query($us_query) -> fetch_array();
+        $us_email = $us["email"];
+
+        $em_query = 'SELECT * FROM agenzia_utente as a WHERE a.id_agenzia = \''.$id_agency.'\' AND a.id_utente = \''.$_SESSION["id"].'\'';
+        $em = $conn -> query($em_query);
+
+        // if owner do operation
+        if ($ow_email == $us_email) {
             ?>
-    </table>
-    <br>
-    <form action="operation/add_employee.php" method="get">
-    <button type="submit" name="agency" value="<?php echo($agency) ?>">Add</button>
-    </form>
+            <h3>Employees</h3>
+            <table style="max-width: 70%">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contract</th>
+                    <th>Operations</th>
+                </tr>
+                    <?php
+                        $query = 'SELECT u.nome AS nome, u.email AS email, a.tipoContratto AS contratto FROM utente AS u, agenzia_utente AS a
+                                WHERE a.id_agenzia = \''.$id_agency.'\' AND u.id IN
+                                        (SELECT id_utente FROM agenzia_utente WHERE agenzia_utente.id_agenzia = \''.$id_agency.'\')
+                                AND u.id = a.id_utente';
+                        $res = $conn -> query($query);
+                        foreach ($res as $r) {
+                            echo("<tr>");
+                            echo("<td>".$r["nome"]."</td>");
+                            echo("<td>".$r["email"]."</td>");
+                            echo("<td style = \"text-align: center\">".$r["contratto"]."</td>");
+                            echo("<td style=\"text-align: center\"><form action=\"operation/remove_employee.php\" method=\"post\"><button type=\"submit\" name=\"email\"value=\"".$r["email"]."\">Remove</button></form>
+                                <input type=\"button\" onclick=\"location.href='agency/operations/remove_employee.php'\" value=\"Modify\"></td>");
+                            echo("</tr>");
+                        }
+                    ?>
+            </table>
+            <br>
+            <form action="operation/add_employee.php" method="get">
+            <button type="submit" name="agency" value="<?php echo($agency) ?>">Add</button>
+            </form>
+            <?php
+        } else if ($em -> num_rows > 0) { // not the owner
+            echo("Employee");
+        } else {
+            echo("Normal User");
+        }
+
+    ?>
+    
 
 </body>
 <footer>
