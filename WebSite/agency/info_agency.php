@@ -61,6 +61,7 @@
         $agency = $res["nome"];
         $ow_email = $res["email"];
         $id_agency = $res["id"];
+        $_SESSION["agency_id"] = $id_agency;
         echo("<hr><h2>{$agency}</h2>");
 
         $us_query = 'SELECT * FROM utente AS u WHERE u.id = \''.$_SESSION["id"].'\';';
@@ -106,7 +107,32 @@
         } else if ($em -> num_rows > 0) { // not the owner
             echo("Employee");
         } else {
-            echo("Normal User");
+            ?>
+            <h2>All travels</h2>
+            <table style = "width: 70%">
+                <tr>
+                    <th>Destination</th>
+                    <th>Available Places</th>
+                    <th>Departure Date</th>
+                    <th>Return Date</th>
+                    <th style = "width: 10%; text-align: center">Price per person</th>
+                </tr>
+                <?php
+                    $travel_query = 'SELECT * FROM viaggio';
+                    $tv = $conn -> query($travel_query);
+                    foreach ($tv as $x) {
+                        echo("<tr>");
+                        echo("<td>".$x["dest"]."</td>");
+                        echo("<td style = \"text-align: center\">".$x["postiDisponibili"]."</td>");
+                        echo("<td style = \"text-align: center\">".$x["dataPartenza"]."</td>");
+                        echo("<td style = \"text-align: center\">".$x["dataArrivo"]."</td>");
+                        echo("<td style=\"text-align: center\">".$x["prezzo"]."</td>");
+                        // aggiungi il tasto per prenotare se l'utente ha fatto il logiin
+                        echo("</tr>");
+                    }
+                ?>
+            </table>
+            <?php
         }
 
     ?>

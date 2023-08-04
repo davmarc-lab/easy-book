@@ -54,10 +54,10 @@
         </tr>
         <form action="add.php" method="post">
             <?php
-                $ag_query = 'SELECT a.id, a.email FROM agenzia AS a WHERE a.nome = \''.$_SESSION["agency"].'\'';
+                $ag_query = 'SELECT * FROM agenzia AS a WHERE a.nome = \''.$_SESSION["agency"].'\'';
                 $ag = $conn -> query($ag_query) -> fetch_array();
-                $ag_id = $ag["id"];             // agency id
                 $ow_email = $ag["email"];
+                $ag_id = $_SESSION["agency_id"];
 
                 $email_query = 'SELECT u.email FROM utente AS u WHERE u.id = \''.$_SESSION["id"].'\'';
                 $curr_email = $conn -> query($email_query) -> fetch_array();
