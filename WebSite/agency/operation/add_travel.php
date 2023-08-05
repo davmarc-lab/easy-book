@@ -23,9 +23,9 @@
         }
     ?>
     <hr>
-    <h2>Add Travel</h3>
+    <h2>Plan your schedule</h3>
     <h3>Insert all the cities of the travel with this format (city 1_city 2_city 3)</h2>
-    <form action="check_schedule.php" method="post">
+    <form action="check_schedule.php" method="post" id="schedule_form">
         <table>
             <tr>
                 <td>Select from all schedule:</td>
@@ -53,13 +53,18 @@
                 </td>
             </tr>
             <tr>
-                <td style="color: blue">or create a new one</td>
+                <td style="color: blue">or create a new ones</td>
             </tr>
             <tr>
                 <td>Cities:</td>
                 <td><input type="text" name="city" placeholder="city1_city2"></td>
             </tr>
+            <tr>
+                <td>Description:</td>
+                <td><textarea name="description" form="schedule_form" cols="40" rows="5" placeholder="Enter the descritpion here..."></textarea></td>
+            </tr>
         </table>
+
         <button name="submit" value="toCheck">Send</button>
         <input type="reset" value="Clear">
     </form>
@@ -72,6 +77,6 @@
 </body>
 <footer>
     <hr>
-    <a href="../index.php">HomePage</a>
+    <a href="../../index.php">HomePage</a>
 </footer>
 </html>
