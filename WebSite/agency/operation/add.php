@@ -47,7 +47,7 @@
                 <th>Type of Contract</th>
                 <th>End of Contract</th>
             </tr>
-            <form action="check.php" method="post">
+            <form action="check_employee.php" method="post">
                 <?php
                     $users = $_POST["user"];
                     $i = 0;

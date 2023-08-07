@@ -100,6 +100,6 @@
 </body>
 <footer>
     <hr>
-    <a href="../index.php">HomePage</a>
+    <a href="../../index.php">HomePage</a>
 </footer>
 </html>

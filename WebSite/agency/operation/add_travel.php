@@ -36,17 +36,23 @@
                             $schedule_query = 'SELECT * FROM itinerario';
                             $scd = $conn -> query($schedule_query);
                             foreach ($scd as $x) {
-                                $query = 'SELECT l.nome
-                                        FROM localita as l, itinerario_localita as ai
+                                $ct_id = "";
+                                $cities = "";
+                                $query = 'SELECT l.nome as nome, l.id as id
+                                        FROM localita as l, itinerario_localita as ai, itinerario as i
                                         WHERE l.id = ai.id_localita
-                                        AND l.id IN
-                                            (SELECT ia.id_localita FROM itinerario_localita as ia);';
+                                        AND i.id = ai.id_itinerario
+                                        AND i.id = \''.$x["id"].'\'';
                                 $res = $conn -> query($query);
-                                foreach ($res as $city) {
-                                    $cities.= ($city["nome"].'-');
+                                if ($res -> num_rows > 0) {
+                                    foreach ($res as $city) {
+                                        $cities.= ($city["nome"].'-');
+                                        $ct_id .= ($city["id"].',');
+                                    }
+                                    $cities = substr_replace($cities, "", -1);
+                                    $ct_id = substr_replace($ct_id, "", -1);
+                                    echo("<option value=\"{$ct_id}\">{$cities}</option>");
                                 }
-                                $cities = substr_replace($cities, "", -1);
-                                echo("<option value=\"{$x["id"]}\">{$cities}</option>");
                             }
                         ?>
                     </select>
@@ -65,7 +71,7 @@
             </tr>
         </table>
 
-        <button name="submit" value="toCheck">Send</button>
+        <button name="submit">Send</button>
         <input type="reset" value="Clear">
     </form>
     <br>

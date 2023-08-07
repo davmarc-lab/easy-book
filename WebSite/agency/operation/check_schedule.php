@@ -59,23 +59,25 @@
                     }
 
                 }
-                // took all the cities ids, creating schedule
-                $schedule_query = 'INSERT INTO itinerario (descrizione) VALUES(\''.$_POST["description"].'\')';
-                // $sdl = $conn -> query($schedule_query);              // it works
-                $schedule_query = 'SELECT MAX(id) AS id FROM itinerario';
-                $sd = $conn -> query($schedule_query) -> fetch_array();
-                $sd_id = $sd["id"];
-                // it schedule obtained
-
-                // foreach ($ct_id as $x) {             // it works
-                //     $insert_query = 'INSERT INTO itinerario_localita (id_localita, id_itinerario)
-                //             VALUES(\''.$x.'\', \''.$sd_id.'\')';
-                //     $res = $conn -> query($insert_query);
-                // }
-
             } else {
-                echo($first);
+                $ct_id = explode(',', $first);
             }
+            // taken all cities id, creating schedule...
+            
+            // $schedule_query = 'INSERT INTO itinerario (descrizione) VALUES(\''.$_POST["description"].'\')';
+            // $sdl = $conn -> query($schedule_query);              // it works
+            $schedule_query = 'SELECT MAX(id) AS id FROM itinerario';
+            $sd = $conn -> query($schedule_query) -> fetch_array();
+            $sd_id = $sd["id"];
+            // // it schedule obtained
+
+            // foreach ($ct_id as $x) {             // it works
+            //     $insert_query = 'INSERT INTO itinerario_localita (id_localita, id_itinerario)
+            //             VALUES(\''.$x.'\', \''.$sd_id.'\')';
+            //     $res = $conn -> query($insert_query);
+            // }
+            $_SESSION["schedule_id"] = $sd_id;
+            header("location:check_travel.php");
 
         } else if ($first == -1 && $second == ""){
             echo("You cannot leave each empty, chose one and set it.");
