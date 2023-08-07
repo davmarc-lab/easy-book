@@ -116,6 +116,31 @@
         }
     ?>
     
+    <h2>Transport</h2>
+    <table style = "max-width: 70%">
+        <tr>
+            <th>Type</th>
+            <th>Available Places</th>
+            <th>Year</th>
+            <th>Status</th>
+            <th style="text-align: center">Link</th>
+        </tr>
+        <?php
+            $travel_query = 'SELECT * FROM mezzo as m WHERE m.id_agenzia = \''.$_SESSION["agency_id"].'\'';
+            $tv = $conn -> query($travel_query);
+            foreach ($tv as $x) {
+                echo("<tr>");
+                echo("<td style = \"text-align: center\">".$x["tipo"]."</td>");
+                echo("<td style = \"text-align: center\">".$x["postiDisponibili"]."</td>");
+                echo("<td style = \"text-align: center\">".$x["annoImmatricolazione"]."</td>");
+                echo("<td style=\"text-align: center\"> NaN</td>");
+                echo("<td></td>");
+            }
+        ?>
+    </table>
+    <br>
+    <button onclick="location.href='operation/add_transport.php'">Add</button>
+
     <h2>All travels</h2>
     <table style = "width: 70%">
         <tr>

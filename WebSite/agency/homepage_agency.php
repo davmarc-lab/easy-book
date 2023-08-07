@@ -22,7 +22,6 @@
         color: black;
         width: auto;
     }
-
 </style>
 <body>
     <h1>Easy Book</h1>

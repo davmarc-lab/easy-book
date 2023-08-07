@@ -6,6 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Easy Book</title>
 </head>
+<style>
+    .transport{
+        border:1px solid black;
+        border-collapse: collapse;
+        color: red;
+        width: auto;
+    }
+
+    .tcol {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding-left: 4px;
+        padding-right: 4px;
+        color: black;
+        width: auto;
+    }
+</style>
 <body>
     <h1>Easy Book</h1>
     <?php
@@ -16,7 +33,7 @@
             ?>
                 <div class="login">
                     <?php
-                        echo ("Hello ".$_SESSION["name"]." | <a href=\"../homepage_agency.php\">Agencies</a> | <a href=\"../user/logout.php\">Logout</a>");
+                        echo ("Hello ".$_SESSION["name"]." | <a href=\"../homepage_agency.php\">Agencies</a> | <a href=\"../../user/logout.php\">Logout</a>");
                     ?>
                 </div>
             <?php
@@ -25,7 +42,7 @@
     <hr>
     <h3>Organize the travel</h3>
 
-    <form action="" method="post" id="">
+    <form action="<?php echo($_SERVER["PHP_SELF"]); ?>" method="post">
         <table>
             <tr>
                 <td>Departure date:</td>
@@ -47,33 +64,31 @@
             </tr>
         </table>
 
-        <h3>Transport</h3>
-        <table>
+        <h2>Transport</h2>
+        <h3>Select transport</h3>
+
+        <table class="transport">
             <tr>
-                <td>Select transport:</td>
-                <td>
-                    <table>
-                        <?php
-                            $trs_query = 'SELECT * FROM mezzo as m WHERE m.id_agenzia = \''.$_SESSION["agency_id"].'\'';
-                            $trs = $conn -> query($trs_query);
-                            
-                            foreach ($trs as $x) {
-                                echo("<tr>");
-                                echo("<td>");
-                                echo(($x["id"].'-'.$x["tipo"].'-'.$x["annoImmatricolazione"].'-'.$x["postiDisponibili"]));
-                                echo("</td>");
-                                echo("<td>");
-                                echo("<input type=\"checkbox\" name=\"transport[]\" value=\"{$x["id"]}\">");
-                                echo("</td>");
-                                echo("</tr>");
-                            }
-                        ?>
-                    </table>
-                    
-                </td>
+                <th colspan="2">id-type-year-places</th>
             </tr>
+            <?php
+                $trs_query = 'SELECT * FROM mezzo as m WHERE m.id_agenzia = \''.$_SESSION["agency_id"].'\'';
+                $trs = $conn -> query($trs_query);
+                
+                foreach ($trs as $x) {
+                    echo("<tr>");
+                    echo("<td class=\"tcol\">");
+                    echo(($x["id"].'-'.$x["tipo"].'-'.$x["annoImmatricolazione"].'-'.$x["postiDisponibili"]));
+                    echo("</td>");
+                    echo("<td class=\"tcol\">");
+                    echo("<input type=\"checkbox\" name=\"transport[]\" value=\"{$x["id"]}\">");
+                    echo("</td>");
+                    echo("</tr>");
+                }
+            ?>
         </table>
 
+        <br>
         <button name="submit">Send</button>
         <input type="reset" value="Clear">
     </form>
