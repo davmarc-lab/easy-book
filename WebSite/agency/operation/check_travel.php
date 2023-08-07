@@ -23,11 +23,55 @@
         }
     ?>
     <hr>
-    <h2>Plan your schedule</h3>
-    <h3>Insert all the cities of the travel with this format (city 1_city 2_city 3)</h2>
-    <form action="check_schedule.php" method="post" id="schedule_form">
+    <h3>Organize the travel</h3>
+
+    <form action="" method="post" id="">
         <table>
-            
+            <tr>
+                <td>Departure date:</td>
+                <td>
+                    <input type="date" name="departure" placeholder="Departure date">
+                </td>
+            </tr>
+            <tr>
+                <td>Return date:</td>
+                <td>    
+                    <input type="date" name="return" placeholder="Return date">
+                </td>
+            </tr>
+            <tr>
+                <td>Price per person:</td>
+                <td>
+                    <input type="number" name="price" placeholder="Price per person">
+                </td>
+            </tr>
+        </table>
+
+        <h3>Transport</h3>
+        <table>
+            <tr>
+                <td>Select transport:</td>
+                <td>
+                    <table>
+                        <?php
+                            $trs_query = 'SELECT * FROM mezzo as m WHERE m.id_agenzia = \''.$_SESSION["agency_id"].'\'';
+                            $trs = $conn -> query($trs_query);
+                            
+                            foreach ($trs as $x) {
+                                echo("<tr>");
+                                echo("<td>");
+                                echo(($x["id"].'-'.$x["tipo"].'-'.$x["annoImmatricolazione"].'-'.$x["postiDisponibili"]));
+                                echo("</td>");
+                                echo("<td>");
+                                echo("<input type=\"checkbox\" name=\"transport[]\" value=\"{$x["id"]}\">");
+                                echo("</td>");
+                                echo("</tr>");
+                            }
+                        ?>
+                    </table>
+                    
+                </td>
+            </tr>
         </table>
 
         <button name="submit">Send</button>

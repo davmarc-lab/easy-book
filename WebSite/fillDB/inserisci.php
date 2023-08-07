@@ -35,4 +35,8 @@
         }
         return implode($pass); //turn the array into a string
     }
+
+    function RandYear() {
+        return rand(1980, 2023);
+    }
 ?>

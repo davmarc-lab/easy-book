@@ -1,9 +1,14 @@
 <?php
-    include_once("database/dbConnection.php");
+    include_once("../database/dbConnection.php");
     include("inserisci.php");
 
     $conn = OpenCon();
-    for ($i = 0; $i < 10; $i++) {        
+    for ($i = 0; $i < 10; $i++) {     
+        
+        // $auto = RandSource('auto.txt');
+        // $year = RandYear();
+        // $ins_query = 'INSERT INTO mezzo (tipo, annoImmatricolazione, postiDisponibili, id_agenzia) VALUES(\''.$auto.'\', \''.$year.'\', \''.rand(60, 100).'\', )';
+        // $res = $conn -> query($ins_query);
 
         // $name = RandSource('fillDB/name.txt');   
         // $surname = RandSource('fillDB/surname.txt');

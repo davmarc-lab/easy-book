@@ -1,0 +1,6 @@
+5
+aereo
+pullman
+taxi
+auto
+nave
