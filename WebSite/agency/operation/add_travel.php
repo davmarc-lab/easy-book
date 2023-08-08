@@ -203,6 +203,7 @@
                 foreach($vehicles as $x) {
                     $vehi_query = 'INSERT INTO viaggio_mezzo (id_viaggio, id_mezzo)
                             VALUES(\''.$trav_id.'\', \''.$x.'\')';
+                    $res = $conn -> query($vehi_query);
                 }
 
                 $agency_name = str_replace(' ', '+', $_SESSION["agency"]);

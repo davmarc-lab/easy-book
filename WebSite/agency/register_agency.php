@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="../style/style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Easy Book</title>
@@ -8,7 +9,27 @@
 
 <body>
     <h1>Easy Book</h1>
-    <?php if (!isset($_POST["submit"])) { ?>
+    <?php 
+        session_start();
+        if (isset($_SESSION["id"])) {
+            ?>
+                <div class="login">
+                    <?php
+                        echo ("Hello ".$_SESSION["name"]." | <a href=\"./homepage_agency.php\">Agencies</a> | <a href=\"../user/logout.php\">Logout</a>");
+                    ?>
+                </div>
+                <hr>
+            <?php
+        } else {
+            ?>
+            <div class="login">
+                <a href="../user/login.php">Login</a> |
+                <a href="../user/register.php">Sign Up</a>
+            </div>
+            <hr>
+            <?php
+        }
+        if (!isset($_POST["submit"])) { ?>
         <form method="post" action="<?php echo $_SERVER["PHP_SELF"]?>">
             <h2>Agency Sign Up</h2>
             <table>
@@ -36,6 +57,7 @@
             <input type="submit" name="submit" value="Confirm">
             <input type="reset" value="Clear">
         </form>
+        <hr>
         <a href="../index.php">HomePage</a>
         <?php } else {
             include_once("../database/dbConnection.php");
@@ -82,6 +104,5 @@
                 echo("Agency signed correctly. You can now <a href=\"../index.php\">Go Back</a><br>");
             }
         } ?>
-
 </body>
 </html>
