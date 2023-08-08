@@ -75,7 +75,7 @@
 
     <h2>All travels</h2>
     <travel>
-        <table style = "width: 70%">
+        <table style = "width: 70%; text-align: center">
             <tr>
                 <th>Agency Name</th>
                 <th>Destination</th>
@@ -84,13 +84,34 @@
                 <th>Return Date</th>
                 <th style = "width: 10%">Price per person</th>
             </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
+            <?php
+                $travel_query = 'SELECT a.nome AS nome, v.postiDisponibili AS places, v.dataPartenza AS depart,
+                            v.dataArrivo AS retur, v.prezzo AS price, v.id_itinerario AS id_itinerario
+                        FROM viaggio AS v, agenzia AS a WHERE a.id = v.id_agenzia';
+                $travel = $conn -> query($travel_query);
+
+                foreach($travel as $x) {
+                    echo("<tr>");
+
+                    $dest_query = 'SELECT l.nome FROM localita as l, itinerario_localita as il 
+                        WHERE l.id = il.id_localita
+                        AND il.id_itinerario = \''.$x["id_itinerario"].'\'';
+                    $dest = $conn -> query($dest_query);
+                    $cities = "";
+                    foreach ($dest as $c) {
+                        $cities .= ($c["nome"].'-');
+                    }
+                    $cities = substr_replace($cities, "", -1);
+
+                    echo("<td>{$x["nome"]}</td>");
+                    echo("<td>{$cities}</td>");
+                    echo("<td>{$x["places"]}</td>");
+                    echo("<td>{$x["depart"]}</td>");
+                    echo("<td>{$x["retur"]}</td>");
+                    echo("<td>{$x["price"]}</td>");
+                    echo("</tr>");
+                }
+            ?>
         </table>
     </travel>
 </body>

@@ -10,6 +10,8 @@
     table, th {
         border:1px solid black;
         border-collapse: collapse;
+        padding-left: 4px;
+        padding-right: 4px;
         color: red;
         width: auto;
     }
@@ -28,14 +30,6 @@
     <?php
         /// needed to print different operation for each user, checked by query
         $o_flag = $e_flag = $u_flag = false;
-
-        function contains($str, array $arr)
-        {
-            foreach($arr as $a) {
-                if (stripos($str,$a) !== false) return true;
-            }
-            return false;
-        }
 
         session_start();
         if (isset($_SESSION["id"])) {
@@ -116,6 +110,57 @@
         }
     ?>
     
+    <h2>All travels</h2>
+    <table style="max-width: 70%">
+        <tr>
+            <th>Destination</th>
+            <th>Available Places</th>
+            <th>Departure Date</th>
+            <th>Return Date</th>
+            <th style = "text-align: center">Price per person</th>
+            <th style="text-align: center">Link</th>
+        </tr>
+        <?php
+            $travel_query = 'SELECT * FROM viaggio AS v WHERE v.id_agenzia = \''.$_SESSION["agency_id"].'\'';
+            $tv = $conn -> query($travel_query);
+            foreach ($tv as $x) {
+
+                $dest_query = 'SELECT l.nome FROM localita as l, itinerario_localita as il 
+                        WHERE l.id = il.id_localita
+                        AND il.id_itinerario = \''.$x["id_itinerario"].'\'';
+                $dest = $conn -> query($dest_query);
+                $cities = "";
+                foreach ($dest as $c) {
+                    $cities .= ($c["nome"].'-');
+                }
+                $cities = substr_replace($cities, "", -1);
+
+                echo("<tr>");
+                echo("<td>{$cities}</td>");
+                echo("<td style = \"text-align: center\">".$x["postiDisponibili"]."</td>");
+                echo("<td style = \"text-align: center\">".$x["dataPartenza"]."</td>");
+                echo("<td style = \"text-align: center\">".$x["dataArrivo"]."</td>");
+                echo("<td style=\"text-align: center\">".$x["prezzo"]."</td>");
+                if ($e_flag || $o_flag) {
+                    echo("<td style=\"text-align: center\">");
+                    ?>
+                    <form action="info_agency.php" method="get">
+                        <button style="cursor: pointer;" name="travel" value="<?php echo($x["id"]); ?>">Manage</button>
+                    </form>
+                    <form action="info_travel.php" method="get">
+                        <button style="cursor: pointer;" name="travel" value="<?php echo($x["id"]); ?>">Book</button>
+                    </form>
+                    <?php echo("</td>");
+                }
+                // aggiungi il tasto per prenotare se l'utente ha fatto il logiin
+                echo("</tr>");
+            }
+        ?>
+    </table>
+    <br>
+    <button onclick="location.href='operation/add_travel.php'">Add</button>
+    <hr>
+
     <h2>Transport</h2>
     <table style = "max-width: 70%">
         <tr>
@@ -140,43 +185,6 @@
     </table>
     <br>
     <button onclick="location.href='operation/add_transport.php'">Add</button>
-
-    <h2>All travels</h2>
-    <table style = "width: 70%">
-        <tr>
-            <th>Destination</th>
-            <th>Available Places</th>
-            <th>Departure Date</th>
-            <th>Return Date</th>
-            <th style = "width: 10%; text-align: center">Price per person</th>
-            <th style="text-align: center">Link</th>
-        </tr>
-        <?php
-            $travel_query = 'SELECT * FROM viaggio AS v WHERE v.id_agenzia = \''.$_SESSION["agency"].'\' ';
-            $tv = $conn -> query($travel_query);
-            foreach ($tv as $x) {
-                echo("<tr>");
-                echo("<td>".$x["dest"]."</td>");
-                echo("<td style = \"text-align: center\">".$x["postiDisponibili"]."</td>");
-                echo("<td style = \"text-align: center\">".$x["dataPartenza"]."</td>");
-                echo("<td style = \"text-align: center\">".$x["dataArrivo"]."</td>");
-                echo("<td style=\"text-align: center\">".$x["prezzo"]."</td>");
-                if ($e_flag || $o_flag) {
-                    echo("<td style=\"text-align: center\">");
-                    ?>
-                    <form action="info_agency.php" method="get">
-                        <button style="cursor: pointer;" name="travel" value="<?php echo($r["id"]); ?>">Manage</button>
-                        <button onclick="location.href='/user/operation/travel_book.php'" style="cursor: pointer;" name="travel" value="<?php echo($r["id"]); ?>">Book</button>
-                    </form>
-                    <?php echo("</td>");
-                }
-                // aggiungi il tasto per prenotare se l'utente ha fatto il logiin
-                echo("</tr>");
-            }
-        ?>
-    </table>
-    <br>
-    <button onclick="location.href='operation/add_travel.php'">Add</button>
 
 </body>
 <footer>
