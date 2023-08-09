@@ -151,7 +151,7 @@
                 if ($e_flag || $o_flag) {
                     echo("<td style=\"text-align: center\">");
                     ?>
-                    <form action="info_agency.php" method="get">
+                    <form action="info_travel.php" method="get">
                         <button style="cursor: pointer;" name="travel" value="<?php echo($x["id"]); ?>">Manage</button>
                     </form>
                     <form action="info_travel.php" method="get">
@@ -204,10 +204,10 @@
     <br>
     <button onclick="location.href='operation/add_transport.php'">Add</button>
     <?php } ?>
-
+    
+    <footer>
+        <hr>
+        <a href="../index.php">HomePage</a>
+    </footer>
 </body>
-<footer>
-    <hr>
-    <a href="../index.php">HomePage</a>
-</footer>
 </html>
