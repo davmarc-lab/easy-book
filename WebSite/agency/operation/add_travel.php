@@ -47,15 +47,21 @@
                     ?>
                 </div>
             <?php
+        } else {
+            header("location:../../user/login.php");
         }
 
-        if (!isset($_POST["submit"])) {
+        $error = false;
+        if (!isset($_POST["submit"]) || !isset($_POST["isDatePrepared"])) {
     ?>
     <hr>
     <h2>New Travel</h2>
     <h3>Organize the travel</h3>
 
     <form action="<?php echo($_SERVER["PHP_SELF"]); ?>" method="post" id="travel_form">
+        <?php
+            if (!isset($_POST["departure"]) || !isset($_POST["return"])) {
+        ?>
         <table>
             <tr>
                 <td>Departure date:</td>
@@ -69,6 +75,19 @@
                     <input type="date" name="return" placeholder="Return date">
                 </td>
             </tr>
+        </table>
+        <?php
+            } else {
+                $start = new DateTime($_POST["departure"]);
+                $end = new DateTime($_POST["return"]);
+
+                if ($start > $end) {
+                    $error = true;
+                    echo("Dates are invalid.<br>");
+                } else {
+        ?>
+        <input type="hidden" name="isDatePrepared" value="done">
+        <table>
             <tr>
                 <td>Price per person:</td>
                 <td>
@@ -93,8 +112,19 @@
             <?php
                 $trs_query = 'SELECT * FROM mezzo as m WHERE m.id_agenzia = \''.$_SESSION["agency_id"].'\'';
                 $trs = $conn -> query($trs_query);
+
+                $occupied_query = 'SELECT vm.id_mezzo
+                        FROM viaggio as v, viaggio_mezzo as vm
+                        WHERE v.id = vm.id_viaggio AND
+                        v.id_agenzia = \''.$_SESSION["agency_id"].'\' AND
+                        ((v.dataPartenza BETWEEN \''.$start -> format('Y-m-d').'\' AND \''.$end -> format('Y-m-d').'\') OR
+                        (v.dataArrivo BETWEEN \''.$start -> format('Y-m-d').'\' AND \''.$end -> format('Y-m-d').'\'));';
+                $occ_id = $conn -> query($occupied_query) -> fetch_all();
                 
                 foreach ($trs as $x) {
+                    if (in_array(array($x["id"]), $occ_id)) {
+                        continue;
+                    }
                     echo("<tr>");
                     echo("<td class=\"tcol\">");
                     echo(($x["id"].'-'.$x["tipo"].'-'.$x["annoImmatricolazione"].'-'.$x["postiDisponibili"]));
@@ -119,42 +149,40 @@
                 <td><textarea name="description" form="travel_form" cols="40" rows="5" placeholder="Enter the descritpion here..."></textarea></td>
             </tr>
         </table>
+        <input type="hidden" name="departure" value="<?php $start ?>">
+        <input type="hidden" name="return" value="<?php $end ?>">
+        <?php } }
+            if (!$error) {
+        ?> 
         <button name="submit">Send</button>
         <input type="reset" value="Clear">
+        <?php } ?>
     </form>
     <br>
     <?php
         // for the go back link
         $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
-        echo("<button onclick=\"location.href='../info_agency.php?agency={$agency_name}'\">Go back</button>");
+        echo("<button onclick=\"location.href='../".($error ? "operation/add_travel.php" : "info_agency.php?agency={$agency_name}")."'\">Go back</button>");
         } else {
             // all checks and insert query
-            $start = new DateTime($_POST["departure"]);
-            $end = new DateTime($_POST["return"]);
             $vehicles = "";
             $error = false;
-
-            if ($start > $end) {
-                $error = true;
-                echo("Dates are invalid.<br>");
-            }
 
             if (!isset($_POST["transport"])) {
                 $error = true;
                 echo("You have to select at least one vehicle.<br>");
             } else {
                 $vehicles = $_POST["transport"];
-            }
-
-            $max_places = 0;
-            foreach ($vehicles as $x) {
-                $ask_query = 'SELECT m.postiDisponibili FROM mezzo as m WHERE m.id = \''.$x.'\'';
-                $res = $conn -> query($ask_query) -> fetch_array()["postiDisponibili"];
-                $max_places += $res;
-            }
-            if ($_POST["places"] > $max_places) {
-                $error = true;
-                echo("Cannot add a value bigger then the total available places of vehicles.<br>");
+                $max_places = 0;
+                foreach ($vehicles as $x) {
+                    $ask_query = 'SELECT m.postiDisponibili FROM mezzo as m WHERE m.id = \''.$x.'\'';
+                    $res = $conn -> query($ask_query) -> fetch_array()["postiDisponibili"];
+                    $max_places += $res;
+                }
+                if ($_POST["places"] > $max_places) {
+                    $error = true;
+                    echo("Cannot add a value bigger then the total available places of vehicles.<br>");
+                }
             }
 
             $ct_id = array();
