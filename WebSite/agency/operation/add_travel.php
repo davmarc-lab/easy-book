@@ -146,7 +146,7 @@
             </tr>
             <tr>
                 <td>Description:</td>
-                <td><textarea name="description" form="travel_form" cols="40" rows="5" placeholder="Enter the descritpion here..."></textarea></td>
+                <td><textarea name="description" form="travel_form" cols="40" rows="5" placeholder="Write the descritpion here..."></textarea></td>
             </tr>
         </table>
         <input type="hidden" name="departure" value="<?php $start ?>">

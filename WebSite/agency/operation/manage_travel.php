@@ -53,7 +53,7 @@
 
         $error = false;
         $travel_query = 'SELECT v.dataPartenza as depa, v.dataArrivo as retu,
-                    v.prezzo as price, v.postiDisponibili as places, v.id
+                    v.prezzo as price, v.postiDisponibili as places, v.id_itinerario as schedule, v.id as id
                 FROM viaggio as v 
                 WHERE v.id = \''.$_POST["travel"].'\'';
         $trv = $conn -> query($travel_query) -> fetch_array();
@@ -162,14 +162,28 @@
         <br>
         <h2>Schedule</h2>
         <h3>Prepare your schedule</h3>
+        <?php
+            $schedule_query = 'SELECT i.descrizione as descr FROM itinerario as i WHERE i.id = \''.$trv["schedule"].'\'';
+            $sch = $conn -> query($schedule_query) -> fetch_array();
+
+            $city_query = 'SELECT l.nome FROM localita as l, itinerario_localita as i WHERE i.id_localita = l.id AND i.id_itinerario = \''.$trv["schedule"].'\'';
+            $city = $conn -> query($city_query);
+            $cities = "";
+
+            foreach ($city as $x) {
+                $cities .= (strtolower($x["nome"]).'_');
+            }
+            $cities = substr_replace($cities, "", -1);
+
+        ?>
         <table>
             <tr>
                 <td>Cities:</td>
-                <td><input type="text" name="city" placeholder="city1_city2_city3_city number 4" required></td>
+                <td><input type="text" name="city" placeholder="city1_city2_city3_city number 4" value="<?php echo($cities); ?>" required></td>
             </tr>
             <tr>
                 <td>Description:</td>
-                <td><textarea name="description" form="travel_form" cols="40" rows="5" placeholder="Enter the descritpion here..."></textarea></td>
+                <td><textarea name="description" form="travel_form" cols="40" rows="5" placeholder="Write the description here..."><?php echo($sch["descr"]); ?></textarea></td>
             </tr>
         </table>
         <input type="hidden" name="departure" value="<?php $start ?>">
@@ -219,7 +233,7 @@
                         $ct = $ct -> fetch_array();
                         array_push($ct_id, $ct["id"]);
                     } else {
-                        $str_x = ucwords($x, '\' .');        // modifica e metti tutte le prime lettere maiuscole sopo gli spazi prima di inserire nel db
+                        $str_x = ucwords($x, '\' .');
                         $insert_query = 'INSERT INTO localita (nome) VALUES(\''.$str_x.'\')';
                         $ins = $conn -> query($insert_query);
                         $sel_query = 'SELECT * FROM localita AS l WHERE LOWER(l.nome) LIKE LOWER(\''.$str_x.'\')';
@@ -233,24 +247,30 @@
                 echo("<br><button onclick=\"location.href='add_travel.php'\">Go back</button>");
             } else {
                 // go next, put it in
-                $schedule_query = 'INSERT INTO itinerario (descrizione) VALUES(\''.$_POST["description"].'\')';
-                $sdl = $conn -> query($schedule_query);              // it works
-                $schedule_query = 'SELECT MAX(id) AS id FROM itinerario';
+                $schedule_query = 'SELECT v.id_itinerario AS id FROM viaggio as v WHERE v.id = \''.$trv["id"].'\'';
                 $sd = $conn -> query($schedule_query) -> fetch_array();
                 $sd_id = $sd["id"];
-                // it schedule obtained
+                $schedule_query = 'UPDATE itinerario
+                        SET descrizione = \''.$_POST["descrizione"].'\'
+                        WHERE id = \''.$sd_id.'\'';
+                $sdl = $conn -> query($schedule_query);
 
-                foreach ($ct_id as $x) {             // it works
+                foreach ($ct_id as $x) {             // it remove and put them again, win win situescion
                     $insert_query = 'INSERT INTO itinerario_localita (id_localita, id_itinerario)
                             VALUES(\''.$x.'\', \''.$sd_id.'\')';
                     $res = $conn -> query($insert_query);
                 }
 
-                $travel_query = 'INSERT INTO viaggio (postiDisponibili, dataPartenza, dataArrivo, prezzo, id_agenzia, id_itinerario)
-                        VALUES(\''.$_POST["places"].'\', \''.$_POST["departure"].'\', \''.$_POST["return"].'\', \''.$_POST["price"].'\', \''.$_SESSION["agency_id"].'\', \''.$sd_id.'\')';
+                $travel_query = 'UPDATE viaggio
+                        SET
+                            postiDisponibili = \''.$_POST["places"].'\',
+                            dataPartenza = \''.$_POST["departure"].'\',
+                            dataArrivo = \''.$_POST["return"].'\',
+                            prezzo = \''.$_POST["price"].'\'
+                        WHERE
+                            id = \''.$trv["id"].'\'';
                 $res = $conn -> query($travel_query);
 
-                $trav_id = $conn -> query('SELECT MAX(v.id) AS id FROM viaggio AS v WHERE v.id_agenzia = \''.$_SESSION["agency_id"].'\'') -> fetch_array()["id"];
                 foreach($vehicles as $x) {
                     $vehi_query = 'INSERT INTO viaggio_mezzo (id_viaggio, id_mezzo)
                             VALUES(\''.$trav_id.'\', \''.$x.'\')';
