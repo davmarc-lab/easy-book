@@ -53,8 +53,7 @@
         $_SESSION["agency"] = $_GET["agency"];
 
         $agency_query = 'SELECT * FROM agenzia AS a WHERE a.nome = \''.$_GET["agency"].'\' ;';
-        $res = $conn -> query($agency_query);
-        $res = $res -> fetch_array();
+        $res = $conn -> query($agency_query) -> fetch_array();
         $agency = $res["nome"];
         $ow_email = $res["email"];
         $id_agency = $res["id"];
@@ -84,7 +83,7 @@
                         <?php
                             $query = 'SELECT u.nome AS nome, u.email AS email, a.tipoContratto AS contratto FROM utente AS u, agenzia_utente AS a
                                     WHERE a.id_agenzia = \''.$id_agency.'\' AND u.id IN
-                                            (SELECT id_utente FROM agenzia_utente WHERE agenzia_utente.id_agenzia = \''.$id_agency.'\')
+                                        (SELECT id_utente FROM agenzia_utente WHERE agenzia_utente.id_agenzia = \''.$id_agency.'\')
                                     AND u.id = a.id_utente';
                             $res = $conn -> query($query);
                             foreach ($res as $r) {
@@ -152,7 +151,7 @@
                     echo("<td style=\"text-align: center\">");
                     ?>
                     <form action="info_travel.php" method="get">
-                        <button style="cursor: pointer;" name="travel" value="<?php echo($x["id"]); ?>">Manage</button>
+                        <button style="cursor: pointer;" name="travel" value="<?php echo($x["id"]); ?>">Info</button>
                     </form>
                     <form action="info_travel.php" method="get">
                         <button style="cursor: pointer;" name="travel" value="<?php echo($x["id"]); ?>">Book</button>

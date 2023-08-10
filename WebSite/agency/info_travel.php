@@ -59,41 +59,93 @@
             $cities .= ($c["nome"].'-');
         }
         $cities = substr_replace($cities, "", -1);
-
-        if (isset($_SESSION["id"])) {
     ?>
     <hr>
     <h2><?php echo($cities); ?></h2>
-    <table style="max-width: 70%">
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Contract</th>
-            <th>Operations</th>
-        </tr>
-            <?php
-                $query = 'SELECT u.nome AS nome, u.email AS email, a.tipoContratto AS contratto FROM utente AS u, agenzia_utente AS a
-                        WHERE a.id_agenzia = \''.$id_agency.'\' AND u.id IN
-                                (SELECT id_utente FROM agenzia_utente WHERE agenzia_utente.id_agenzia = \''.$id_agency.'\')
-                        AND u.id = a.id_utente';
-                $res = $conn -> query($query);
-                foreach ($res as $r) {
-                    echo("<tr>");
-                    echo("<td>".$r["nome"]."</td>");
-                    echo("<td>".$r["email"]."</td>");
-                    echo("<td style = \"text-align: center\">".$r["contratto"]."</td>");
-                    echo("<td style=\"text-align: center\"><form action=\"operation/remove_employee.php\" method=\"post\"><button type=\"submit\" name=\"email\"value=\"".$r["email"]."\">Remove</button></form>
-                        <input type=\"button\" onclick=\"location.href='agency/operations/remove_employee.php'\" value=\"Modify\"></td>");
-                    echo("</tr>");
-                }
-            ?>
-    </table>
-    <br>
-    <form action="operation/add_employee.php" method="get">
-    <button type="submit" name="agency" value="<?php echo($agency) ?>">Add</button>
-    </form>
-    <?php } ?>
+    
+    <?php
+        $travel_query = 'SELECT v.dataPartenza as depart, v.dataArrivo as retu, i.descrizione as descr, v.prezzo as price
+                FROM viaggio as v, itinerario as i
+                WHERE v.id = \''.$travel_id.'\'
+                AND i.id = v.id_itinerario;';
+        $trv = $conn -> query($travel_query) -> fetch_array();
+        echo("<h3>Description</h3>");
+        if (strlen($trv["descr"]) > 0) {
+            $str = $trv["descr"];
+        } else {
+            $str = "Description not available.";
+        }
+        echo("<p>{$str}</p>");
+    ?>
 
+    <div style="display: flex">
+        <section style="flex-basis: 10%; text-align: center">
+            <h3>Departure Date</h3>
+            <p><?php echo($trv["depart"]); ?></p>
+        </section>
+        <section style="flex-basis: 10%; text-align: center">
+            <h3>Return Date</h3>
+            <p><?php echo($trv["retu"]); ?></p>
+        </section>
+    </div>
+    
+    <div style="display: flex">
+        <section style="text-align: center">
+            <h3>Vehicles</h3>
+            <?php
+                $vehi_query = 'SELECT m.tipo, m.id, m.postiDisponibili
+                        FROM mezzo as m, viaggio_mezzo as vm 
+                        WHERE m.id = vm.id_mezzo
+                        AND vm.id_viaggio = \''.$travel_id.'\';';
+                $vehi = $conn -> query($vehi_query);
+                ?>
+                <table style="text-align: center">
+                    <tr>
+                        <th>Type</th>
+                        <th>Places</th>
+                    </tr>
+                    <?php
+                    foreach ($vehi as $x) {
+                        echo("<tr>");
+                        echo("<td>{$x["tipo"]}</td>");
+                        echo("<td>{$x["postiDisponibili"]}</td>");
+                        echo("</tr>");
+                    }
+            ?>
+                </table>
+        </section>
+
+        <section style="flex-basis: 12%; text-align: center">
+            <h3>Price per person</h3>
+            <p><?php echo($trv["price"]); ?> €</p>
+        </section>
+    </div>
+    <br>
+    <?php
+        if (!$u_flag) {
+            ?>
+            <div style="display: flex">
+                <form action="operation/manage_travel.php" method="post" style="flex-basis: 70px">
+                    <input type="hidden" name="travel" value="<?php echo($travel_id); ?>">
+                    <button>Manage</button>
+                </form>
+                <form action="../user/operation/book_travel.php" method="get">
+                    <input type="hidden" name="travel" value="<?php echo($travel_id); ?>">
+                    <button>Book</button>
+                </form>
+            </div>
+            <?php
+        } else {
+            ?>
+            <form action="../user/operation/book_travel.php" method="get">
+                <input type="hidden" name="travel" value="<?php echo($travel_id); ?>">
+                <button>Book</button>
+            </form>
+            <?php
+        }
+        $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
+        echo("<br><button onclick=\"location.href='info_agency.php?agency={$agency_name}'\">Go back</button>");
+    ?>
     <footer>
         <hr>
         <a href="../index.php">HomePage</a>

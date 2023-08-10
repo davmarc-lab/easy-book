@@ -73,7 +73,6 @@
                 $error = true;
             }
             $pass = $_POST["pass"];
-            echo($pass.' ');
             // check password validity
             if (!preg_match($passPattern, $pass)) {
                 echo("The password is invalid, max 8 characters<br>");
@@ -90,11 +89,9 @@
             }
         } ?>
 
+    <footer>
+        <hr>
+            <a href="../index.php">HomePage</a>
+    </footer>
 </body>
-<footer>
-    <hr>
-    <div class="login">
-        <a href="../index.php">HomePage</a>
-    </div>
-</footer>
 </html>

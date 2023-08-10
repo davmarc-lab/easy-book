@@ -52,27 +52,33 @@
         }
 
         $error = false;
+        $travel_query = 'SELECT v.dataPartenza as depa, v.dataArrivo as retu,
+                    v.prezzo as price, v.postiDisponibili as places, v.id
+                FROM viaggio as v 
+                WHERE v.id = \''.$_POST["travel"].'\'';
+        $trv = $conn -> query($travel_query) -> fetch_array();
+
         if (!isset($_POST["submit"]) || !isset($_POST["isDatePrepared"])) {
     ?>
     <hr>
-    <h2>New Travel</h2>
-    <h3>Organize the travel</h3>
+    <h2>Modify Travel</h2>
 
     <form action="<?php echo($_SERVER["PHP_SELF"]); ?>" method="post" id="travel_form">
         <?php
             if (!isset($_POST["departure"]) || !isset($_POST["return"])) {
         ?>
         <table>
+            <input type="hidden" name="travel" value="<?php echo($_POST["travel"]); ?>">
             <tr>
                 <td>Departure date:</td>
                 <td>
-                    <input type="date" name="departure" placeholder="Departure date" required>
+                    <input type="date" name="departure" placeholder="Departure date" value="<?php echo($trv["depa"]); ?>" required>
                 </td>
             </tr>
             <tr>
                 <td>Return date:</td>
                 <td>    
-                    <input type="date" name="return" placeholder="Return date" required>
+                    <input type="date" name="return" placeholder="Return date" value="<?php echo($trv["retu"]); ?>" required>
                 </td>
             </tr>
         </table>
@@ -91,13 +97,13 @@
             <tr>
                 <td>Price per person:</td>
                 <td>
-                    <input type="number" name="price" placeholder="Price per person" required>
+                    <input type="number" name="price" placeholder="Price per person" value="<?php echo($trv["price"]); ?>" required>
                 </td>
             </tr>
             <tr>
                 <td>Available places:</td>
                 <td>
-                    <input type="number" name="places" placeholder="Places" required>
+                    <input type="number" name="places" placeholder="Places" value="<?php echo($trv["places"]); ?>" required>
                 </td>
             </tr>
         </table>
@@ -112,6 +118,23 @@
             <?php
                 $trs_query = 'SELECT * FROM mezzo as m WHERE m.id_agenzia = \''.$_SESSION["agency_id"].'\'';
                 $trs = $conn -> query($trs_query);
+
+                // all vehicles of the travel given
+                $trvh_query = 'SELECT *
+                        FROM mezzo as m, viaggio_mezzo as vm
+                        WHERE vm.id_mezzo = m.id
+                        AND vm.id_viaggio = \''.$trv["id"].'\'';
+                $trvh = $conn -> query($trvh_query);
+                foreach ($trvh as $x) {
+                    echo("<tr>");
+                    echo("<td class=\"tcol\">");
+                    echo(($x["id"].'-'.$x["tipo"].'-'.$x["annoImmatricolazione"].'-'.$x["postiDisponibili"]));
+                    echo("</td>");
+                    echo("<td class=\"tcol\">");
+                    echo("<input type=\"checkbox\" name=\"transport[]\" value=\"{$x["id"]}\" checked>");
+                    echo("</td>");
+                    echo("</tr>");
+                }
 
                 $occupied_query = 'SELECT vm.id_mezzo
                         FROM viaggio as v, viaggio_mezzo as vm
