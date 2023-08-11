@@ -52,6 +52,7 @@
         }
 
         $error = false;
+        $start = $end = new DateTime();
         $travel_query = 'SELECT v.dataPartenza as depa, v.dataArrivo as retu,
                     v.prezzo as price, v.postiDisponibili as places, v.id_itinerario as schedule, v.id as id
                 FROM viaggio as v 
@@ -122,9 +123,12 @@
 
                 // all vehicles of the travel given
                 $trvh_query = 'SELECT m.id, m.tipo, m.annoImmatricolazione, m.postiDisponibili
-                        FROM mezzo as m, viaggio_mezzo as vm
+                        FROM mezzo as m, viaggio_mezzo as vm, viaggio as v
                         WHERE vm.id_mezzo = m.id
-                        AND vm.id_viaggio = \''.$trv["id"].'\'';
+                        AND vm.id_viaggio = v.id
+                        AND vm.id_viaggio = \''.$trv["id"].'\' AND
+                        ((v.dataPartenza BETWEEN \''.$start -> format('Y-m-d').'\' AND \''.$end -> format('Y-m-d').'\') OR
+                        (v.dataArrivo BETWEEN \''.$start -> format('Y-m-d').'\' AND \''.$end -> format('Y-m-d').'\'));';
                 $trvh = $conn -> query($trvh_query);
                 foreach ($trvh as $x) {
                     echo("<tr>");
@@ -187,8 +191,8 @@
                 <td><textarea name="description" form="travel_form" cols="40" rows="5" placeholder="Write the description here..."><?php echo($sch["descr"]); ?></textarea></td>
             </tr>
         </table>
-        <input type="hidden" name="departure" value="<?php $start ?>">
-        <input type="hidden" name="return" value="<?php $end ?>">
+        <input type="hidden" name="departure" value="<?php echo($start -> format('Y-m-d')); ?>">
+        <input type="hidden" name="return" value="<?php echo($end -> format('Y-m-d')); ?>">
         <?php } }
             if (!$error) {
         ?> 
@@ -273,13 +277,11 @@
                     $res = $conn -> query($insert_query);
                 }
 
-                $start = new DateTime($_POST["departure"]);
-                $end = new DateTime($_POST["return"]);
                 $travel_query = 'UPDATE viaggio
                         SET
                             postiDisponibili = \''.$_POST["places"].'\',
-                            dataPartenza = \''.$start -> format('Y-m-d').'\',
-                            dataArrivo = \''.$end -> format('Y-m-d').'\',
+                            dataPartenza = \''.$_POST["departure"].'\',
+                            dataArrivo = \''.$_POST["return"].'\',
                             prezzo = \''.$_POST["price"].'\'
                         WHERE
                             id = \''.$trv["id"].'\'';

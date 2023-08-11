@@ -81,7 +81,7 @@
                         <th>Operations</th>
                     </tr>
                         <?php
-                            $query = 'SELECT u.nome AS nome, u.email AS email, a.tipoContratto AS contratto FROM utente AS u, agenzia_utente AS a
+                            $query = 'SELECT a.id as emid, u.nome AS nome, u.email AS email, a.tipoContratto AS contratto FROM utente AS u, agenzia_utente AS a
                                     WHERE a.id_agenzia = \''.$id_agency.'\' AND u.id IN
                                         (SELECT id_utente FROM agenzia_utente WHERE agenzia_utente.id_agenzia = \''.$id_agency.'\')
                                     AND u.id = a.id_utente';
@@ -91,8 +91,10 @@
                                 echo("<td>".$r["nome"]."</td>");
                                 echo("<td>".$r["email"]."</td>");
                                 echo("<td style = \"text-align: center\">".$r["contratto"]."</td>");
-                                echo("<td style=\"text-align: center\"><form action=\"operation/remove_employee.php\" method=\"post\"><button type=\"submit\" name=\"email\"value=\"".$r["email"]."\">Remove</button></form>
-                                    <input type=\"button\" onclick=\"location.href='agency/operations/remove_employee.php'\" value=\"Modify\"></td>");
+                                echo("<td style=\"text-align: center\">
+                                    <form action=\"operation/remove_employee.php\" method=\"post\"><button type=\"submit\" name=\"email\"value=\"".$r["email"]."\">Remove</button></form>
+                                    <form action=\"operation/manage_employee.php\" method=\"post\"><button type=\"submit\" name=\"emid\"value=\"".$r["emid"]."\">Modify</button></form>
+                                    </td>");
                                 echo("</tr>");
                             }
                         ?>
@@ -119,12 +121,8 @@
             <th>Available Places</th>
             <th>Departure Date</th>
             <th>Return Date</th>
-            <th style = "text-align: center">Price per person</th>
-            <?php
-                if ($e_flag || $o_flag) {      
-            ?>
-            <th style="text-align: center">Link</th>
-            <?php } ?>
+            <th>Price per person</th>
+            <th>Link</th>
         </tr>
         <?php
             $travel_query = 'SELECT * FROM viaggio AS v WHERE v.id_agenzia = \''.$_SESSION["agency_id"].'\'';
@@ -155,6 +153,13 @@
                     </form>
                     <form action="info_travel.php" method="get">
                         <button style="cursor: pointer;" name="travel" value="<?php echo($x["id"]); ?>">Book</button>
+                    </form>
+                    <?php echo("</td>");
+                } else {
+                    echo("<td style=\"text-align: center\">");
+                    ?>
+                    <form action="info_travel.php" method="get">
+                        <button style="cursor: pointer;" name="travel" value="<?php echo($x["id"]); ?>">Info</button>
                     </form>
                     <?php echo("</td>");
                 }
