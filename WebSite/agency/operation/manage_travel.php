@@ -92,6 +92,7 @@
                     echo("Dates are invalid.<br>");
                 } else {
         ?>
+        <input type="hidden" name="travel" value="<?php echo($_POST["travel"]); ?>">
         <input type="hidden" name="isDatePrepared" value="done">
         <table>
             <tr>
@@ -120,7 +121,7 @@
                 $trs = $conn -> query($trs_query);
 
                 // all vehicles of the travel given
-                $trvh_query = 'SELECT *
+                $trvh_query = 'SELECT m.id, m.tipo, m.annoImmatricolazione, m.postiDisponibili
                         FROM mezzo as m, viaggio_mezzo as vm
                         WHERE vm.id_mezzo = m.id
                         AND vm.id_viaggio = \''.$trv["id"].'\'';
@@ -251,29 +252,53 @@
                 $sd = $conn -> query($schedule_query) -> fetch_array();
                 $sd_id = $sd["id"];
                 $schedule_query = 'UPDATE itinerario
-                        SET descrizione = \''.$_POST["descrizione"].'\'
+                        SET descrizione = \''.$_POST["description"].'\'
                         WHERE id = \''.$sd_id.'\'';
                 $sdl = $conn -> query($schedule_query);
 
-                foreach ($ct_id as $x) {             // it remove and put them again, win win situescion
+                $seldelete_query = 'SELECT l.id FROM localita as l, itinerario_localita as il
+                        WHERE l.id = il.id_localita
+                        AND il.id_itinerario = \''.$sd_id.'\'';
+                $sel = $conn -> query($seldelete_query);
+
+                foreach($sel as $x) {
+                    $delete_query = 'DELETE FROM itinerario_localita
+                            WHERE id_localita = \''.$x["id"].'\' AND id_itinerario = \''.$sd_id.'\'';
+                    $res = $conn -> query($delete_query);
+                }
+
+                foreach ($ct_id as $x) {             // remove and put them again, win win situescion
                     $insert_query = 'INSERT INTO itinerario_localita (id_localita, id_itinerario)
                             VALUES(\''.$x.'\', \''.$sd_id.'\')';
                     $res = $conn -> query($insert_query);
                 }
 
+                $start = new DateTime($_POST["departure"]);
+                $end = new DateTime($_POST["return"]);
                 $travel_query = 'UPDATE viaggio
                         SET
                             postiDisponibili = \''.$_POST["places"].'\',
-                            dataPartenza = \''.$_POST["departure"].'\',
-                            dataArrivo = \''.$_POST["return"].'\',
+                            dataPartenza = \''.$start -> format('Y-m-d').'\',
+                            dataArrivo = \''.$end -> format('Y-m-d').'\',
                             prezzo = \''.$_POST["price"].'\'
                         WHERE
                             id = \''.$trv["id"].'\'';
                 $res = $conn -> query($travel_query);
 
+                $seldelete_query = 'SELECT m.id FROM mezzo as m, viaggio_mezzo as vm
+                        WHERE m.id = vm.id_mezzo
+                        AND vm.id_viaggio = \''.$trv["id"].'\'';
+                $sel = $conn -> query($seldelete_query);
+
+                foreach($sel as $x) {
+                    $delete_query = 'DELETE FROM viaggio_mezzo
+                            WHERE id_viaggio = \''.$trv["id"].'\' AND id_mezzo = \''.$x["id"].'\'';
+                    $res = $conn -> query($delete_query);
+                }
+
                 foreach($vehicles as $x) {
                     $vehi_query = 'INSERT INTO viaggio_mezzo (id_viaggio, id_mezzo)
-                            VALUES(\''.$trav_id.'\', \''.$x.'\')';
+                            VALUES(\''.$trv["id"].'\', \''.$x.'\')';
                     $res = $conn -> query($vehi_query);
                 }
 
