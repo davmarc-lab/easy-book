@@ -24,5 +24,3 @@
 
     $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
     header("location:../info_agency.php?agency={$agency_name}");
-    
-?>
