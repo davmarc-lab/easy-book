@@ -46,8 +46,8 @@
     } else {
     ?>
         <div class="login">
-            <a href="../login.php">Login</a> |
-            <a href="../register.php">Sign Up</a>
+            <a href="../user/login.php">Login</a> |
+            <a href="../user/register.php">Sign Up</a>
         </div>
         <?php
     }
@@ -154,7 +154,7 @@
                 <form action="info_travel.php" method="get">
                     <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Info</button>
                 </form>
-                <form action="info_travel.php" method="get">
+                <form action="../user/operation/book_travel.php" method="get">
                     <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Book</button>
                 </form>
             <?php echo ("</td>");

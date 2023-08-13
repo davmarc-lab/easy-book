@@ -12,19 +12,17 @@
     <h1>Easy Book</h1>
     <?php
     session_start();
+    include_once("../../database/dbConnection.php");
     if (isset($_SESSION["id"])) {
-    ?>
-        <div class="login">
-            <?php
-            echo ("Hello " . $_SESSION["name"] . " | <a href=\"../../agency/homepage_agency.php\">Agencies</a> | <a href=\"../logout.php\">Logout</a>");
-            ?>
-        </div>
-    <?php
+        PrintLoginInfo();
     } else {
         header("location:../login.php");
     }
-    echo ("<hr>");
-    include_once("../../database/dbConnection.php");
+
+    if (isset($_GET["agency"])) {
+        $_SESSION["agency"] = $_GET["agency"];
+    }
+
     $conn = OpenCon();
     if (!isset($_POST["submit"])) {
         $travel_id = $_GET["travel"];
@@ -76,6 +74,7 @@
         $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
         echo ("<br><button onclick=\"location.href='../../agency/info_agency.php?agency={$agency_name}'\">Go back</button>");
     } else {
+        echo ("<hr>");
         $error = false;
         $travel_id = $_POST["travel"];
 

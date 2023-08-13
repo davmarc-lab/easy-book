@@ -35,20 +35,18 @@
     $o_flag = $e_flag = $u_flag = false;
 
     session_start();
-    if (isset($_SESSION["id"])) {
-    ?>
-        <div class="login">
-            <?php
-            echo ("Hello " . $_SESSION["name"] . " | <a href=\"./homepage_agency.php\">Agencies</a> | <a href=\"../user/logout.php\">Logout</a>");
-            ?>
-        </div>
-    <?php
-    } else {
-        header("location:../user/login.php");
-    }
     include_once("../database/dbConnection.php");
+    PrintLoginInfo();
     $conn = OpenCon();
     $travel_id = $_GET["travel"];
+
+    $agency_query = 'SELECT a.nome as nome 
+            FROM viaggio as v, agenzia as a
+            WHERE a.id = v.id_agenzia
+            AND v.id = \'' . $travel_id . '\'';
+    $agency = $conn->query($agency_query)->fetch_array();
+    $_SESSION["agency"] = $agency["nome"];
+
     $dest_query = 'SELECT l.nome
                 FROM localita as l, itinerario_localita as il 
                 WHERE l.id = il.id_localita
