@@ -35,23 +35,8 @@
     $o_flag = $e_flag = $u_flag = false;
 
     session_start();
-    if (isset($_SESSION["id"])) {
-    ?>
-        <div class="login">
-            <?php
-            echo ("Hello " . $_SESSION["name"] . " | <a href=\"./homepage_agency.php\">Agencies</a> | <a href=\"../user/logout.php\">Logout</a>");
-            ?>
-        </div>
-    <?php
-    } else {
-    ?>
-        <div class="login">
-            <a href="../user/login.php">Login</a> |
-            <a href="../user/register.php">Sign Up</a>
-        </div>
-        <?php
-    }
     include_once("../database/dbConnection.php");
+    PrintLoginInfo();
     $conn = OpenCon();
     $_SESSION["agency"] = $_GET["agency"];
 
@@ -74,7 +59,7 @@
         // if owner do operation
         if ($ow_email == $us_email) {
             $o_flag = true;
-        ?>
+    ?>
             <h3>Employees</h3>
             <table style="max-width: 70%">
                 <tr>
@@ -193,21 +178,26 @@
             $vehi_query = 'SELECT * FROM mezzo as m WHERE m.id_agenzia = \'' . $_SESSION["agency_id"] . '\'';
             $tv = $conn->query($vehi_query);
             $free_query = 'SELECT vm.id_mezzo FROM viaggio_mezzo as vm, viaggio as v
-                    WHERE v.id = vm.id_viaggio';
+                    WHERE v.id = vm.id_viaggio
+                    AND (CURDATE() BETWEEN v.dataPartenza AND v.dataArrivo)';
             $free = $conn->query($free_query)->fetch_all();
 
             foreach ($tv as $x) {
+                $isOccupied = in_array(array($x["id"]), $free);
+                $dis = $isOccupied ? "disabled" : "";
                 echo ("<tr>");
                 echo ("<td style = \"text-align: center\">" . $x["tipo"] . "</td>");
-                $count_query = 'SELECT SUM(vu.numeroPrenotazioni) as posti
-                        FROM viaggio as v, viaggio_utente as vu
-                        WHERE vu.id_viaggio = v.id
-                        AND v.id = \'' . $x["id"] . '\'';
-                $count = $conn->query($count_query)->fetch_array();
                 echo ("<td style = \"text-align: center\">" . $x["postiDisponibili"] . "</td>");
                 echo ("<td style = \"text-align: center\">" . $x["annoImmatricolazione"] . "</td>");
-                echo ("<td style=\"text-align: center\">" . (in_array(array($x["id"]), $free) ? "occupied" : "free") . "</td>");
-                echo ("<td></td>");
+                echo ("<td style=\"text-align: center\">" . ($isOccupied ? "occupied" : "free") . "</td>");
+                echo ("<td style=\"text-align: center\">
+                    <form action=\"info_vehicle.php\" method=\"get\">
+                        <button name=\"vehicle\" value=\"{$x["id"]}\">Info</button>
+                    </form>
+                    <form action=\"operation/remove_vehicle.php\" method=\"get\">
+                        <button name=\"vehicle\" value=\"{$x["id"]}\" {$dis}>Remove</button>
+                    </form>
+                </td>");
             }
             ?>
         </table>
