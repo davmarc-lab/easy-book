@@ -63,7 +63,7 @@
 
     <div style="display: flex">
         <form action="operation/suspend_transport.php" method="get" style="flex-basis: 70px">
-            <button name=" vehi" value="<?php echo ($vehi["id"]); ?>">Suspend</button>
+            <button name="vehi" value="<?php echo ($vehi["id"]); ?>">Suspend</button>
         </form>
 
         <form action="operation/manage_transport.php" method="get">

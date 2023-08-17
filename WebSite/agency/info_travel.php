@@ -31,13 +31,37 @@
 <body>
     <h1>Easy Book</h1>
     <?php
-    // needed to print different operation for each user, checked by query
-    $o_flag = $e_flag = $u_flag = false;
-
     session_start();
     include_once("../database/dbConnection.php");
     PrintLoginInfo();
     $conn = OpenCon();
+    // needed to print different operation for each user, checked by query
+    $o_flag = $e_flag = $u_flag = false;
+    if (isset($_SESSION["id"])) {
+
+        $admin_query = "SELECT a.id_utente as id FROM amministratore as a WHERE a.id = (SELECT MAX(s.id) FROM amministratore as s)";
+        $adid = $conn->query($admin_query)->fetch_array()["id"];
+
+        $owner_query = "SELECT a.email as email FROM agenzia as a WHERE a.id = '{$_SESSION["agency_id"]}'";
+        $owemail = $conn->query($owner_query)->fetch_array()["email"];
+        $owid_query = "SELECT u.id FROM utente as u WHERE u.email = '$owemail'";
+        $owid = $conn->query($owid_query)->fetch_array()["id"];
+
+        $em_query = 'SELECT * FROM agenzia_utente as a
+                WHERE a.id_agenzia = \'' . $_SESSION["agency_id"] . '\'
+                AND a.id_utente = \'' . $_SESSION["id"] . '\'
+                AND (a.scadenza < CURDATE() OR a.scadenza IS NULL)';
+        $em = $conn->query($em_query);
+
+        if ($_SESSION["id"] == $owid) {
+            $o_flag = true;
+        } else if ($em->num_rows > 0) {
+            $e_flag = true;
+        } else {
+            $u_flag = true;
+        }
+    }
+
     $travel_id = $_GET["travel"];
 
     $agency_query = 'SELECT a.nome as nome 
@@ -123,26 +147,28 @@
     </div>
     <br>
     <?php
-    if (!$u_flag) {
+    if (isset($_SESSION["id"])) {
+        if (!$u_flag) {
     ?>
-        <div style="display: flex">
-            <form action="operation/manage_travel.php" method="post" style="flex-basis: 70px">
-                <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
-                <button>Manage</button>
-            </form>
+            <div style="display: flex">
+                <form action="operation/manage_travel.php" method="post" style="flex-basis: 70px">
+                    <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
+                    <button>Manage</button>
+                </form>
+                <form action="../user/operation/book_travel.php" method="get">
+                    <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
+                    <button>Book</button>
+                </form>
+            </div>
+        <?php
+        } else {
+        ?>
             <form action="../user/operation/book_travel.php" method="get">
                 <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
                 <button>Book</button>
             </form>
-        </div>
     <?php
-    } else {
-    ?>
-        <form action="../user/operation/book_travel.php" method="get">
-            <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
-            <button>Book</button>
-        </form>
-    <?php
+        }
     }
     $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
     echo ("<br><button onclick=\"location.href='info_agency.php?agency={$agency_name}'\">Go back</button>");

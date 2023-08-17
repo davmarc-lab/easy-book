@@ -53,7 +53,10 @@
         $us = $conn->query($us_query)->fetch_array();
         $us_email = $us["email"];
 
-        $em_query = 'SELECT * FROM agenzia_utente as a WHERE a.id_agenzia = \'' . $id_agency . '\' AND a.id_utente = \'' . $_SESSION["id"] . '\'';
+        $em_query = 'SELECT * FROM agenzia_utente as a
+                WHERE a.id_agenzia = \'' . $id_agency . '\'
+                AND a.id_utente = \'' . $_SESSION["id"] . '\'
+                AND (a.scadenza < CURDATE() OR a.scadenza IS NULL)';
         $em = $conn->query($em_query);
 
         // if owner do operation
@@ -66,10 +69,12 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Contract</th>
+                    <th>Expire date</th>
                     <th>Operations</th>
                 </tr>
                 <?php
-                $query = 'SELECT a.id as emid, u.nome AS nome, u.email AS email, a.tipoContratto AS contratto FROM utente AS u, agenzia_utente AS a
+                $query = 'SELECT a.id as emid, u.nome AS nome, u.email AS email, a.scadenza as scad,
+                        a.tipoContratto AS contratto FROM utente AS u, agenzia_utente AS a
                                     WHERE a.id_agenzia = \'' . $id_agency . '\' AND u.id IN
                                         (SELECT id_utente FROM agenzia_utente WHERE agenzia_utente.id_agenzia = \'' . $id_agency . '\')
                                     AND u.id = a.id_utente';
@@ -79,6 +84,7 @@
                     echo ("<td>" . $r["nome"] . "</td>");
                     echo ("<td>" . $r["email"] . "</td>");
                     echo ("<td style = \"text-align: center\">" . $r["contratto"] . "</td>");
+                    echo ("<td style = \"text-align: center\">" . $r["scad"] . "</td>");
                     echo ("<td style=\"text-align: center\">
                                     <form action=\"operation/remove_employee.php\" method=\"post\"><button type=\"submit\" name=\"email\"value=\"" . $r["email"] . "\">Remove</button></form>
                                     <form action=\"operation/manage_employee.php\" method=\"post\"><button type=\"submit\" name=\"emid\"value=\"" . $r["emid"] . "\">Modify</button></form>
@@ -133,22 +139,14 @@
             echo ("<td style = \"text-align: center\">" . $x["dataPartenza"] . "</td>");
             echo ("<td style = \"text-align: center\">" . $x["dataArrivo"] . "</td>");
             echo ("<td style=\"text-align: center\">" . $x["prezzo"] . "</td>");
-            if ($e_flag || $o_flag) {
-                echo ("<td style=\"text-align: center\">");
+            echo ("<td style=\"text-align: center\">");
         ?>
-                <form action="info_travel.php" method="get">
-                    <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Info</button>
-                </form>
-                <form action="../user/operation/book_travel.php" method="get">
-                    <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Book</button>
-                </form>
-            <?php echo ("</td>");
-            } else {
-                echo ("<td style=\"text-align: center\">");
+            <form action="info_travel.php" method="get">
+                <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Info</button>
+            </form>
+            <?php
+            if (isset($_SESSION["id"])) {
             ?>
-                <form action="info_travel.php" method="get">
-                    <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Info</button>
-                </form>
                 <form action="../user/operation/book_travel.php" method="get">
                     <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Book</button>
                 </form>
