@@ -181,18 +181,30 @@
             $free = $conn->query($free_query)->fetch_all();
 
             foreach ($tv as $x) {
+                $disable_query = "SELECT mm.id FROM mezzo_manutenzione as mm, manutenzione as m
+                        WHERE mm.id_manutenzione = m.id
+                        AND mm.id_mezzo = '{$x["id"]}'
+                        AND ((CURDATE() BETWEEN m.dataInizio AND m.dataFine)
+                            OR (m.dataFine IS NULL AND CURDATE() > m.dataInizio))";
+                $disable = $conn->query($disable_query);
                 $isOccupied = in_array(array($x["id"]), $free);
+
+                if ($disable->num_rows > 0) {
+                    $str = "maintenance";
+                } else {
+                    $str = $isOccupied ? "occupied" : "free";
+                }
                 $dis = $isOccupied ? "disabled" : "";
                 echo ("<tr>");
                 echo ("<td style = \"text-align: center\">" . $x["tipo"] . "</td>");
                 echo ("<td style = \"text-align: center\">" . $x["postiDisponibili"] . "</td>");
                 echo ("<td style = \"text-align: center\">" . $x["annoImmatricolazione"] . "</td>");
-                echo ("<td style=\"text-align: center\">" . ($isOccupied ? "occupied" : "free") . "</td>");
+                echo ("<td style=\"text-align: center\">" . $str . "</td>");
                 echo ("<td style=\"text-align: center\">
                     <form action=\"info_vehicle.php\" method=\"get\">
                         <button name=\"vehicle\" value=\"{$x["id"]}\">Info</button>
                     </form>
-                    <form action=\"operation/remove_vehicle.php\" method=\"get\">
+                    <form action=\"operation/remove_transport.php\" method=\"get\">
                         <button name=\"vehicle\" value=\"{$x["id"]}\" {$dis}>Remove</button>
                     </form>
                 </td>");
