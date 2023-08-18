@@ -72,11 +72,11 @@
         } else {
             // go next, put it in
             echo ($_POST["date"]);
-            if (empty($_POST["date"])) {
-                $str = "NULL";
-            } else {
+            if (strlen($_POST["date"]) > 0) {
                 $da = new DateTime($_POST["date"]);
                 $str = $da->format('Y-m-d');
+            } else {
+                $str = "NULL";
             }
             $update_query = 'UPDATE agenzia_utente
                     SET

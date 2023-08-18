@@ -79,6 +79,7 @@
             <th>Start Date</th>
             <th>End Date</th>
             <th>Description</th>
+            <th>Operation</th>
         </tr>
         <?php
         $trs_query = "SELECT * 
@@ -93,6 +94,18 @@
             echo ("<td>{$x["dataInizio"]}</td>");
             echo ("<td>{$x["dataFine"]}</td>");
             echo ("<td>{$x["descrizione"]}</td>");
+            echo ("<td>");
+            echo ("<form action='operation/manage_maintenance.php' method='post'>
+                    <button name='man' value='{$x["id_manutenzione"]}'>Modify</button>
+                    <input type='hidden' name='vehicle' value='{$x["id_mezzo"]}'>
+                </form>");
+            if (!strlen($x["dataFine"]) > 0 || $x["dataFine"] < date('Y-m-d')) {
+                echo ("<form action='operation/active_transport.php' method='post'>
+                    <button name='vehicle' value='{$x["id_mezzo"]}'>Active</button>
+                    <input type='hidden' name='man' value='{$x["id_manutenzione"]}'>
+                </form>");
+            }
+            echo ("</td>");
             echo ("</tr>");
         }
 

@@ -102,7 +102,7 @@
             $insert_query = 'INSERT INTO agenzia (nome, proprietario, sedeFisica, telefono, email)
                         VALUES(\'' . $name . '\', \'' . $owner . '\', \'' . $city . '\', \'' . $tel . '\', \'' . $email . '\');';
             $mysql->query($insert_query);
-            echo ("Agency signed correctly. You can now <a href=\"../index.php\">Go Back</a><br>");
+            echo ("Agency signed correctly. You can now <a href=\"../index.php\">Go back</a><br>");
         }
     } ?>
 </body>

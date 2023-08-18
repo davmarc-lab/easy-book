@@ -185,7 +185,7 @@
                 $disable_query = "SELECT mm.id FROM mezzo_manutenzione as mm, manutenzione as m
                         WHERE mm.id_manutenzione = m.id
                         AND mm.id_mezzo = '{$x["id"]}'
-                        AND ((CURDATE() BETWEEN m.dataInizio AND m.dataFine)
+                        AND ((CURDATE() >= m.dataInizio AND CURDATE() < m.dataFine)
                             OR (m.dataFine IS NULL AND CURDATE() > m.dataInizio))";
                 $disable = $conn->query($disable_query);
                 $isOccupied = in_array(array($x["id"]), $free);
