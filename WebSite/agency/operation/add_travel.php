@@ -202,7 +202,7 @@
                 } else {
                     $str_x = ucwords($x, '\' .');        // modifica e metti tutte le prime lettere maiuscole sopo gli spazi prima di inserire nel db
                     $insert_query = 'INSERT INTO localita (nome) VALUES(\'' . $str_x . '\')';
-                    // $ins = $conn->query($insert_query);
+                    $ins = $conn->query($insert_query);
                     $sel_query = 'SELECT * FROM localita AS l WHERE LOWER(l.nome) LIKE LOWER(\'' . $str_x . '\')';
                     $sel = $conn->query($sel_query)->fetch_array();
                     array_push($ct_id, $sel["id"]);
@@ -215,16 +215,13 @@
         } else {
             // go next, put it in
             $schedule_query = 'INSERT INTO itinerario (descrizione) VALUES(\'' . $_POST["description"] . '\')';
-            // $sdl = $conn->query($schedule_query);              // it works
-            $schedule_query = 'SELECT MAX(id) AS id FROM itinerario';
-            $sd = $conn->query($schedule_query)->fetch_array();
-            $sd_id = $sd["id"];
-            // it schedule obtained
+            $sdl = $conn->query($schedule_query);              // it works
+            $sd_id = $conn->insert_id;
 
             foreach ($ct_id as $x) {             // it works
                 $insert_query = 'INSERT INTO itinerario_localita (id_localita, id_itinerario)
                             VALUES(\'' . $x . '\', \'' . $sd_id . '\')';
-                // $res = $conn->query($insert_query);
+                $res = $conn->query($insert_query);
             }
 
             $start = new DateTime($_POST["departure"]);
@@ -234,17 +231,17 @@
 
             $travel_query = "INSERT INTO viaggio (postiDisponibili, dataPartenza, dataArrivo, prezzo, id_agenzia, id_itinerario)
                     VALUES('{$_POST["places"]}', '{$start->format('Y-m-d')}', '{$end->format('Y-m-d')}', '{$_POST["price"]}', '{$_SESSION["agency_id"]}', '{$sd_id}')";
-            // $res = $conn->query($travel_query);
+            $res = $conn->query($travel_query);
 
             $trav_id = $conn->query('SELECT MAX(v.id) AS id FROM viaggio AS v WHERE v.id_agenzia = \'' . $_SESSION["agency_id"] . '\'')->fetch_array()["id"];
             foreach ($vehicles as $x) {
                 $vehi_query = 'INSERT INTO viaggio_mezzo (id_viaggio, id_mezzo)
                             VALUES(\'' . $trav_id . '\', \'' . $x . '\')';
-                // $res = $conn->query($vehi_query);
+                $res = $conn->query($vehi_query);
             }
 
             $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
-            // header("location:../info_agency.php?agency={$agency_name}");
+            header("location:../info_agency.php?agency={$agency_name}");
         }
     }
     ?>

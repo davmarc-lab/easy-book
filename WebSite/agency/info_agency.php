@@ -146,14 +146,13 @@
                 <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Info</button>
             </form>
             <?php
-            if (isset($_SESSION["id"]) && $isBookable) {
+            if (isset($_SESSION["id"]) && $isBookable && $x["postiDisponibili"] > 1) {
             ?>
                 <form action="../user/operation/book_travel.php" method="get">
                     <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Book</button>
                 </form>
         <?php echo ("</td>");
             }
-            // aggiungi il tasto per prenotare se l'utente ha fatto il logiin
             echo ("</tr>");
         }
         ?>

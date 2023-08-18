@@ -16,15 +16,15 @@
             <table>
                 <tr>
                     <td>Name:</td>
-                    <td><input type="text" placeholder="Name" name="first" required></td>
+                    <td><input type="text" maxlength="40" placeholder="Name" name="first" required></td>
                 </tr>
                 <tr>
                     <td>Surname:</td>
-                    <td><input type="text" placeholder="Surname" name="last" required></td>
+                    <td><input type="text" maxlength="40" placeholder="Surname" name="last" required></td>
                 </tr>
                 <tr>
                     <td>Telephone Number:</td>
-                    <td><input type="text" placeholder="Include prefix" name="tel"></td>
+                    <td><input type="text" maxlength="14" placeholder="Include prefix" name="tel"></td>
                 </tr>
                 <tr>
                     <td>Email:</td>
@@ -32,7 +32,7 @@
                 </tr>
                 <tr>
                     <td>Password:</td>
-                    <td><input type="password" placeholder="Password" name="pass" required>
+                    <td><input type="password" maxlength="8" placeholder="Password" name="pass" required>
                         <p>Please max 8 character</p>
                     </td>
                 </tr>
@@ -68,7 +68,6 @@
             $error = true;
         }
         $email = $_POST["email"];
-        echo ($email . ' ');
         // check if email already exist in database
         $email_query = 'SELECT u.email FROM utente AS u WHERE u.email = \'' . $email . '\'';
         $res = $mysql->query($email_query);

@@ -108,10 +108,58 @@
             echo ("</td>");
             echo ("</tr>");
         }
-
         ?>
     </table>
     <?php
+
+    echo ("<hr>");
+    $travel_query = "SELECT v.* FROM viaggio as v, viaggio_mezzo as vm
+                WHERE v.id = vm.id_viaggio
+                AND v.dataPartenza > CURDATE()
+                AND vm.id_mezzo = '{$_GET["vehicle"]}'
+                GROUP BY v.id";
+    $trv = $conn->query($travel_query);
+
+    if ($trv->num_rows > 0) {
+    ?>
+        <h4>These travels will be removed:</h4>
+        <table style="text-align: center;" class="tab">
+            <tr>
+                <th class="tab">Schedule</th>
+                <th class="tab">Departure Date</th>
+                <th class="tab">Return Date</th>
+                <th class="tab">Available places</th>
+                <th class="tab">Price</th>
+            </tr>
+            <?php
+            foreach ($trv as $x) {
+                $dest_query = 'SELECT l.nome
+                            FROM localita as l, itinerario_localita as il 
+                            WHERE l.id = il.id_localita
+                            AND il.id_itinerario = 
+                                (SELECT v.id_itinerario
+                                FROM viaggio as v
+                                WHERE v.id = \'' . $x["id"] . '\');';
+                $dest = $conn->query($dest_query);
+                $cities = "";
+                foreach ($dest as $c) {
+                    $cities .= ($c["nome"] . '-');
+                }
+                $cities = substr_replace($cities, "", -1);
+                echo ("<tr>");
+                echo ("<td>$cities</td>");
+                echo ("<td>{$x["dataPartenza"]}</td>");
+                echo ("<td>{$x["dataArrivo"]}</td>");
+                echo ("<td>{$x["postiDisponibili"]}</td>");
+                echo ("<td>{$x["prezzo"]}</td>");
+                echo ("</tr>");
+            }
+            ?>
+
+        </table>
+    <?php
+    }
+
     $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
     echo ("<br><button onclick=\"location.href='info_agency.php?agency={$agency_name}'\">Go back</button>");
     ?>

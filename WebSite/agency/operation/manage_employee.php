@@ -15,13 +15,7 @@
     include_once("../../database/dbConnection.php");
     $conn = OpenCon();
     if (isset($_SESSION["id"])) {
-    ?>
-        <div class="login">
-            <?php
-            echo ("Hello " . $_SESSION["name"] . " | <a href=\"../homepage_agency.php\">Agencies</a> | <a href=\"../../user/logout.php\">Logout</a>");
-            ?>
-        </div>
-    <?php
+        PrintLoginInfo();
     } else {
         header("location:../../user/login.php");
     }

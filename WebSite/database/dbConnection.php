@@ -18,7 +18,7 @@ function PrintLoginInfo()
     global $HOME_FOLDER;
     $conn = OpenCon();
     if (isset($_SESSION["id"])) {
-        echo ("<div class=\"login\">Hello " . $_SESSION["name"] . " | <a href=\"{$HOME_FOLDER}user/logout.php\">Logout</a>");
+        echo ("<div class=\"login\">Hello <a href='{$HOME_FOLDER}user/info_user.php'>{$_SESSION["name"]}</a> | <a href=\"{$HOME_FOLDER}user/logout.php\">Logout</a>");
 
         $admin_query = 'SELECT u.id AS id FROM amministratore AS a, utente AS u WHERE u.id = a.id_utente AND a.dataRitiro IS NULL;';
         $res = $conn->query($admin_query);
@@ -28,11 +28,10 @@ function PrintLoginInfo()
             echo (" | <a href=\"{$HOME_FOLDER}admin/homepage_admin.php\">Admin</a>");
         }
 
-        $agency_query = 'SELECT u.id AS id FROM agenzia AS a, utente AS u WHERE u.email = a.email';
+        $agency_query = "SELECT a.id FROM agenzia as a
+                WHERE a.email = (SELECT u.email FROM utente as u WHERE u.id = '{$_SESSION["id"]}');";
         $res = $conn->query($agency_query);
-        $x = $res->fetch_array();
-        $agency = $x["id"];
-        if ($agency == $_SESSION["id"]) {
+        if ($res->num_rows > 0) {
             echo (" | <a href=\"{$HOME_FOLDER}agency/homepage_agency.php\">Agency</a>");
         }
         echo ("</div>");

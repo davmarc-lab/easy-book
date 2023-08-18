@@ -151,24 +151,31 @@
         if (!$u_flag) {
     ?>
             <div style="display: flex">
-                <form action="operation/manage_travel.php" method="post" style="flex-basis: 70px">
-                    <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
-                    <button>Manage</button>
-                </form>
-                <form action="../user/operation/book_travel.php" method="get">
-                    <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
-                    <button>Book</button>
-                </form>
+                <?php
+                $da = new DateTime($trv["depart"]);
+                $int = new DateInterval('P2W');
+                $max = $da->sub($int)->format('Y-m-d'); // gap date to modify travel information
+
+                if ($max > date('Y-m-d', time())) {
+                ?>
+                    <form action="operation/manage_travel.php" method="post" style="flex-basis: 70px">
+                        <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
+                        <button>Manage</button>
+                    </form>
+                <?php
+                }
+                ?>
             </div>
         <?php
-        } else {
+        }
+        // book if possible
+        if ($da->format('Y-m-d') > date('Y-m-d', time())) {
         ?>
             <form action="../user/operation/book_travel.php" method="get">
                 <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
                 <button>Book</button>
             </form>
-    <?php
-        }
+    <?php }
     }
     $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
     echo ("<br><button onclick=\"location.href='info_agency.php?agency={$agency_name}'\">Go back</button>");
