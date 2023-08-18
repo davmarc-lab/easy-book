@@ -10,6 +10,7 @@
 <style>
     table,
     th {
+        text-align: center;
         border: 1px solid black;
         border-collapse: collapse;
         padding-left: 4px;
@@ -70,7 +71,33 @@
             <button name="vehi" value="<?php echo ($vehi["id"]); ?>">Modify</button>
         </form>
     </div>
+    <hr>
+    <h2>All maintenance</h2>
+    <table>
+        <tr>
+            <th>Reason</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Description</th>
+        </tr>
+        <?php
+        $trs_query = "SELECT * 
+                FROM manutenzione as m, mezzo_manutenzione as mm
+                WHERE m.id = mm.id_manutenzione
+                AND mm.id_mezzo = '{$_GET["vehicle"]}'";
+        $trs = $conn->query($trs_query);
 
+        foreach ($trs as $x) {
+            echo ("<tr>");
+            echo ("<td>{$x["motivo"]}</td>");
+            echo ("<td>{$x["dataInizio"]}</td>");
+            echo ("<td>{$x["dataFine"]}</td>");
+            echo ("<td>{$x["descrizione"]}</td>");
+            echo ("</tr>");
+        }
+
+        ?>
+    </table>
     <?php
     $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
     echo ("<br><button onclick=\"location.href='info_agency.php?agency={$agency_name}'\">Go back</button>");

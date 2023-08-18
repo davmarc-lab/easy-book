@@ -132,6 +132,7 @@
                 $cities .= ($c["nome"] . '-');
             }
             $cities = substr_replace($cities, "", -1);
+            $isBookable = $x["dataPartenza"] > date('Y-m-d') ? true : false;
 
             echo ("<tr>");
             echo ("<td>{$cities}</td>");
@@ -145,7 +146,7 @@
                 <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Info</button>
             </form>
             <?php
-            if (isset($_SESSION["id"])) {
+            if (isset($_SESSION["id"]) && $isBookable) {
             ?>
                 <form action="../user/operation/book_travel.php" method="get">
                     <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Book</button>
