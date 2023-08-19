@@ -92,7 +92,7 @@
     <table style="max-width: 70%">
         <tr>
             <th>Destination</th>
-            <th>Available Places</th>
+            <th>Remaining Places</th>
             <th>Departure Date</th>
             <th>Return Date</th>
             <th>Price per person</th>

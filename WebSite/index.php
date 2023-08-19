@@ -82,7 +82,7 @@
             <tr>
                 <th>Agency Name</th>
                 <th>Destination</th>
-                <th>Available Places</th>
+                <th>Remaining Places</th>
                 <th>Departure Date</th>
                 <th>Return Date</th>
                 <th style="width: 10%">Price per person</th>

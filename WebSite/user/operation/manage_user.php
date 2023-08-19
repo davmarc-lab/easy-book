@@ -81,13 +81,31 @@
             $error = true;
         }
         // manca il controllo per l'email
+        $email = $_POST["email"];
+        $email_query = 'SELECT u.email FROM utente AS u
+                WHERE u.email = \'' . $email . '\'
+                AND u.id != \'' . $_SESSION["id"] . '\'';
+        $res = $conn->query($email_query);
+        if ($res->num_rows) {
+            $error = true;
+            echo ("The email already exist in the database.<br>");
+        }
 
         if ($error) {
             echo ("<button onclick=\"window.location.href='manage_user.php'\">Retry</button>");
             echo ("<button onclick=\"window.location.href='../info_user.php'\">Go back</button>");
         } else {
             // send it ma broda
-            $update_query = "";
+            $update_query = "UPDATE utente
+                    SET
+                        nome = '{$first}',
+                        cognome = '{$last}',
+                        telefono = '{$tel}',
+                        email = '{$email}'
+                    WHERE
+                        id = '{$_SESSION["id"]}';";
+            $res = $conn->query($update_query);
+            header("location:../info_user.php");
         }
     }
     ?>

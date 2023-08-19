@@ -37,6 +37,12 @@
     $conn = OpenCon();
     // needed to print different operation for each user, checked by query
     $o_flag = $e_flag = $u_flag = false;
+
+    $travel_id = $_GET["travel"];
+    $agency_query = "SELECT v.id_agenzia FROM viaggio as v WHERE v.id = '{$travel_id}';";
+    $ag_id = $conn->query($agency_query)->fetch_array()["id_agenzia"];
+    $_SESSION["agency_id"] = $ag_id;
+
     if (isset($_SESSION["id"])) {
 
         $admin_query = "SELECT a.id_utente as id FROM amministratore as a WHERE a.id = (SELECT MAX(s.id) FROM amministratore as s)";
@@ -61,8 +67,6 @@
             $u_flag = true;
         }
     }
-
-    $travel_id = $_GET["travel"];
 
     $agency_query = 'SELECT a.nome as nome 
             FROM viaggio as v, agenzia as a
@@ -150,7 +154,7 @@
     if (isset($_SESSION["id"])) {
         if (!$u_flag) {
     ?>
-            <div style="display: flex">
+            <div style="display: flex; flex-basis: 10%;">
                 <?php
                 $da = new DateTime($trv["depart"]);
                 $int = new DateInterval('P2W');
@@ -159,31 +163,37 @@
                 if ($max > date('Y-m-d', time())) {
                 ?>
                     <form action="operation/manage_travel.php" method="post" style="flex-basis: 70px">
-                        <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
-                        <button>Manage</button>
+                        <button name="travel" value="<?php echo ($travel_id); ?>">Manage</button>
                     </form>
                 <?php
                 }
                 ?>
-            </div>
-        <?php
+
+            <?php
         }
         // book if possible
         if ($da->format('Y-m-d') > date('Y-m-d', time())) {
-        ?>
-            <form action="../user/operation/book_travel.php" method="get">
-                <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
-                <button>Book</button>
-            </form>
-    <?php }
+            ?>
+                <form action="../user/operation/book_travel.php" method="get">
+                    <button name="travel" value="<?php echo ($travel_id); ?>">Book</button>
+                </form>
+
+                <form action="operation/remove_travel.php" method="get">
+                    <button name="travel" value="<?php echo ($travel_id); ?>">Remove</button>
+                </form>
+            <?php
+        }
+            ?>
+            </div>
+        <?php
     }
     $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
     echo ("<br><button onclick=\"location.href='info_agency.php?agency={$agency_name}'\">Go back</button>");
-    ?>
-    <footer>
-        <hr>
-        <a href="../index.php">HomePage</a>
-    </footer>
+        ?>
+        <footer>
+            <hr>
+            <a href="../index.php">HomePage</a>
+        </footer>
 </body>
 
 </html>

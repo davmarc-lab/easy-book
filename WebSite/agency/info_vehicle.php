@@ -128,7 +128,7 @@
                 <th class="tab">Schedule</th>
                 <th class="tab">Departure Date</th>
                 <th class="tab">Return Date</th>
-                <th class="tab">Available places</th>
+                <th class="tab">Remaining places</th>
                 <th class="tab">Price</th>
             </tr>
             <?php
