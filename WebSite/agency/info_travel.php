@@ -190,10 +190,10 @@
                             WHERE vu.id_utente = '{$_SESSION["id"]}'
                             AND vu.id_viaggio = '{$_GET["travel"]}'";
                     $sel = $conn->query($sel_query);
-                    if ($sel->num_rows <= 0) {
+                    if ($sel->num_rows <= 0 && $trv["depart"] > date('Y-m-d')) {
                         echo ("<td>");
-                        echo ("<form action=\"../user/operation/book_travel.php?travel={$_GET["id"]}\" method=\"get\">
-                                    <button name=\"travel\" value=\"{$_GET["id"]}\">Book</button>
+                        echo ("<form action=\"../user/operation/book_travel.php?travel={$_GET["travel"]}\" method=\"get\">
+                                    <button name=\"travel\" value=\"{$_GET["travel"]}\">Book</button>
                                 </form>");
                         echo ("</td>");
                     }

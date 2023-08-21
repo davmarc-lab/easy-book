@@ -147,7 +147,6 @@
             </form>
         <?php
             if (isset($_SESSION["id"]) && $isBookable && $x["postiDisponibili"] > 1) {
-                echo ("<td>");
                 $sel_query = "SELECT * FROM viaggio_utente as vu
                             WHERE vu.id_utente = '{$_SESSION["id"]}'
                             AND vu.id_viaggio = '{$x["id"]}'";
@@ -155,11 +154,10 @@
                 if ($sel->num_rows <= 0) {
                     echo ("<form action=\"../user/operation/book_travel.php?travel={$x["id"]}\" method=\"get\">
                             <button name=\"travel\" value=\"{$x["id"]}\">Book</button>
-                            <input type=\"hidden\" name=\"agency\" value=\"{$x["nome"]}\">
                         </form>");
                 }
-                echo ("</td>");
             }
+            echo ("</td>");
             echo ("</tr>");
         }
         ?>
