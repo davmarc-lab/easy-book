@@ -8,8 +8,7 @@
     <title>Easy Book</title>
 </head>
 <style>
-    table,
-    th {
+    .row {
         border: 1px solid black;
         border-collapse: collapse;
         padding-left: 4px;
@@ -18,7 +17,7 @@
         width: auto;
     }
 
-    td {
+    .col {
         border: 1px solid black;
         border-collapse: collapse;
         padding-left: 4px;
@@ -128,14 +127,14 @@
                         AND vm.id_viaggio = \'' . $travel_id . '\';';
             $vehi = $conn->query($vehi_query);
             ?>
-            <table style="text-align: center">
+            <table style="text-align: center" class="row">
                 <tr>
-                    <th>Type</th>
-                    <th>Places</th>
+                    <th class="row">Type</th>
+                    <th class="row">Places</th>
                 </tr>
                 <?php
                 foreach ($vehi as $x) {
-                    echo ("<tr>");
+                    echo ("<tr class=\"col\">");
                     echo ("<td>{$x["tipo"]}</td>");
                     echo ("<td>{$x["postiDisponibili"]}</td>");
                     echo ("</tr>");
@@ -154,37 +153,45 @@
     if (isset($_SESSION["id"])) {
         if (!$u_flag) {
     ?>
-            <div style="display: flex; flex-basis: 10%;">
+            <table>
+                <tr>
+                    <?php
+                    $da = new DateTime($trv["depart"]);
+                    $int = new DateInterval('P2W');
+                    $max = $da->sub($int)->format('Y-m-d'); // gap date to modify travel information
+
+                    if ($max > date('Y-m-d', time())) {
+                    ?>
+                        <td>
+                            <form action="operation/manage_travel.php" method="post" style="flex-basis: 70px">
+                                <button name="travel" value="<?php echo ($travel_id); ?>">Manage</button>
+                            </form>
+                        </td>
+                    <?php
+                    }
+                    ?>
+
                 <?php
-                $da = new DateTime($trv["depart"]);
-                $int = new DateInterval('P2W');
-                $max = $da->sub($int)->format('Y-m-d'); // gap date to modify travel information
-
-                if ($max > date('Y-m-d', time())) {
+            }
+            // book if possible
+            if ($da->format('Y-m-d') > date('Y-m-d', time())) {
                 ?>
-                    <form action="operation/manage_travel.php" method="post" style="flex-basis: 70px">
-                        <button name="travel" value="<?php echo ($travel_id); ?>">Manage</button>
-                    </form>
+                    <td>
+                        <form action="operation/remove_travel.php" method="get">
+                            <button name="travel" value="<?php echo ($travel_id); ?>">Remove</button>
+                        </form>
+                    </td>
+
+                    <td>
+                        <form action="../user/operation/book_travel.php" method="get">
+                            <button name="travel" value="<?php echo ($travel_id); ?>">Book</button>
+                        </form>
+                    </td>
                 <?php
-                }
+            }
                 ?>
-
-            <?php
-        }
-        // book if possible
-        if ($da->format('Y-m-d') > date('Y-m-d', time())) {
-            ?>
-                <form action="../user/operation/book_travel.php" method="get">
-                    <button name="travel" value="<?php echo ($travel_id); ?>">Book</button>
-                </form>
-
-                <form action="operation/remove_travel.php" method="get">
-                    <button name="travel" value="<?php echo ($travel_id); ?>">Remove</button>
-                </form>
-            <?php
-        }
-            ?>
-            </div>
+                </tr>
+            </table>
         <?php
     }
     $agency_name = str_replace(' ', '+', $_SESSION["agency"]);

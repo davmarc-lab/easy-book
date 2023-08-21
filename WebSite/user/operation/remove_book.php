@@ -34,12 +34,12 @@
     include_once("../../database/dbConnection.php");
     PrintLoginInfo();
     if (!isset($_SESSION["id"])) {
-        header("location:../../user/login.php");
+        header("location:../login.php");
     }
     $conn = OpenCon();
     ?>
     <hr>
-    <h2>Delete Travel</h2>
+    <h2>Delete Reservation</h2>
     <?php
     if (!isset($_POST["submit"])) {
         echo ("<h3>Are you sure you want to delete this travel?</h3>");
@@ -101,7 +101,7 @@
                 </td>
                 <td>
                     <?php
-                    echo ("<button onclick=\"location.href='../info_travel.php?travel={$_GET["travel"]}' \">Go back</button>");
+                    echo ("<button onclick=\"location.href='../info_user.php' \">Go back</button>");
                     ?>
                 </td>
             </tr>
@@ -117,8 +117,7 @@
         $res = $conn->query($removeschedule_query);
         $removetravel_query = "DELETE FROM viaggio as v WHERE v.id = '{$_POST["travel"]}';";
         $res = $conn->query($removetravel_query);
-        $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
-        header("location:../info_agency.php?agency={$agency_name}");
+        header("location:../info_user.php");
     }
     ?>
     <footer>

@@ -99,7 +99,7 @@
             <th>Link</th>
         </tr>
         <?php
-        $travel_query = "SELECT * FROM viaggio as v, viaggio_utente as vu
+        $travel_query = "SELECT v.* FROM viaggio as v, viaggio_utente as vu
             WHERE v.id = vu.id_viaggio
             AND vu.id_utente = '{$_SESSION["id"]}'";
         $trv = $conn->query($travel_query);
@@ -131,6 +131,11 @@
             $int = new DateInterval('P30D');
             $max = $da->sub($int)->format('Y-m-d'); // gap date to modify travel information
             if ($max > date('Y-m-d')) {
+                echo ("
+                <form action=\"operation/remove_book.php\" method=\"get\">
+                    <button style=\"cursor: pointer;\" name=\"travel\" value=\"{$x["id"]}\">Remove</button>
+                </form>
+            ");
             }
             echo ("</td>");
             echo ("</tr>");

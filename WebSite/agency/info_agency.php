@@ -213,6 +213,28 @@
         </table>
         <br>
         <button onclick="location.href='operation/add_transport.php'">Add</button>
+        <hr>
+        <h2>All Coupon</h2>
+        <table style="max-width: 70%;">
+            <tr>
+                <th>Description</th>
+                <th>Discount code</th>
+            </tr>
+            <?php
+            $coupon_query = "SELECT * FROM coupon as c WHERE c.id_agenzia = '{$_SESSION["agency_id"]}'";
+            $cpn = $conn->query($coupon_query);
+
+            foreach ($cpn as $x) {
+                echo ("<tr>");
+                echo ("<td>{$x["descrizione"]}</td>");
+                echo ("<td>{$x["codiceSconto"]}</td>");
+                echo ("</tr>");
+            }
+
+            ?>
+        </table>
+        <br>
+        <button onclick="location.href='operation/add_coupon.php'">Add</button>
     <?php } ?>
 
     <footer>
