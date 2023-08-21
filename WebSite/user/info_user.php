@@ -72,7 +72,7 @@
         </section>
         <section class="para">
             <h4 class="title">Telephone</h4>
-            <p><?php echo (empty($user["telefono"]) ? "Not inserted" : $user["telefono"]); ?></p>
+            <p><?php echo (empty($user["telefono"]) ? "Unavailable" : $user["telefono"]); ?></p>
         </section>
         <section class="para">
             <h4 class="title">Email</h4>
@@ -130,13 +130,13 @@
             $da = new DateTime($x["dataPartenza"]);
             $int = new DateInterval('P30D');
             $max = $da->sub($int)->format('Y-m-d'); // gap date to modify travel information
-            // if ($max > date('Y-m-d')) {
-            echo ("
+            if ($max > date('Y-m-d')) {
+                echo ("
                 <form action=\"operation/remove_book.php\" method=\"get\">
                     <button style=\"cursor: pointer;\" name=\"travel\" value=\"{$x["id"]}\">Remove</button>
                 </form>
             ");
-            // }
+            }
             echo ("</td>");
             echo ("</tr>");
         }

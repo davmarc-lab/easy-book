@@ -185,11 +185,19 @@
                     <?php
                     }
                     ?>
-                    <td>
-                        <form action="../user/operation/book_travel.php" method="get">
-                            <button name="travel" value="<?php echo ($travel_id); ?>">Book</button>
-                        </form>
-                    </td>
+                    <?php
+                    $sel_query = "SELECT * FROM viaggio_utente as vu
+                            WHERE vu.id_utente = '{$_SESSION["id"]}'
+                            AND vu.id_viaggio = '{$_GET["travel"]}'";
+                    $sel = $conn->query($sel_query);
+                    if ($sel->num_rows <= 0) {
+                        echo ("<td>");
+                        echo ("<form action=\"../user/operation/book_travel.php?travel={$_GET["id"]}\" method=\"get\">
+                                    <button name=\"travel\" value=\"{$_GET["id"]}\">Book</button>
+                                </form>");
+                        echo ("</td>");
+                    }
+                    ?>
                 <?php
                 }
                 ?>

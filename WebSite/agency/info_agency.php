@@ -145,13 +145,20 @@
             <form action="info_travel.php" method="get">
                 <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Info</button>
             </form>
-            <?php
+        <?php
             if (isset($_SESSION["id"]) && $isBookable && $x["postiDisponibili"] > 1) {
-            ?>
-                <form action="../user/operation/book_travel.php" method="get">
-                    <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Book</button>
-                </form>
-        <?php echo ("</td>");
+                echo ("<td>");
+                $sel_query = "SELECT * FROM viaggio_utente as vu
+                            WHERE vu.id_utente = '{$_SESSION["id"]}'
+                            AND vu.id_viaggio = '{$x["id"]}'";
+                $sel = $conn->query($sel_query);
+                if ($sel->num_rows <= 0) {
+                    echo ("<form action=\"../user/operation/book_travel.php?travel={$x["id"]}\" method=\"get\">
+                            <button name=\"travel\" value=\"{$x["id"]}\">Book</button>
+                            <input type=\"hidden\" name=\"agency\" value=\"{$x["nome"]}\">
+                        </form>");
+                }
+                echo ("</td>");
             }
             echo ("</tr>");
         }
