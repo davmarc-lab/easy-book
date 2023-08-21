@@ -42,7 +42,7 @@
     <h2>Delete Reservation</h2>
     <?php
     if (!isset($_POST["submit"])) {
-        echo ("<h3>Are you sure you want to delete this travel?</h3>");
+        echo ("<h3>Are you sure you want to remove your reservation?</h3>");
 
         $travel_query = "SELECT * FROM viaggio as v WHERE v.id = '{$_GET["travel"]}'";
         $trv = $conn->query($travel_query)->fetch_array();
@@ -63,7 +63,8 @@
 
         $reservation_query = "SELECT SUM(vu.numeroPrenotazioni) as reservations
                 FROM viaggio_utente as vu
-                WHERE vu.id_viaggio = '{$_GET["travel"]}';";
+                WHERE vu.id_viaggio = '{$_GET["travel"]}'
+                AND vu.id_utente = '{$_SESSION["id"]}';";
         $rsv = $conn->query($reservation_query)->fetch_array()["reservations"];
 
         $schedule_query = "SELECT i.descrizione FROM itinerario as i 
@@ -108,15 +109,27 @@
         </table>
     <?php
     } else {
-        $removeschedule_query = "DELETE FROM itinerario as i
-                WHERE i.id = (
-                    SELECT v.id_itinerario 
-                    FROM viaggio as v 
-                    WHERE v.id = '{$_POST["travel"]}'
-                    );";
-        $res = $conn->query($removeschedule_query);
-        $removetravel_query = "DELETE FROM viaggio as v WHERE v.id = '{$_POST["travel"]}';";
-        $res = $conn->query($removetravel_query);
+        $reservation_query = "SELECT SUM(vu.numeroPrenotazioni) as reservations, vu.id as id
+                FROM viaggio_utente as vu
+                WHERE vu.id_viaggio = '{$_POST["travel"]}'
+                AND vu.id_utente = '{$_SESSION["id"]}'
+                GROUP BY vu.id;";
+        $reser = $conn->query($reservation_query)->fetch_array();
+
+        $places_query = "SELECT v.postiDisponibili FROM viaggio as v WHERE v.id = '{$_POST["travel"]}'";
+        $places = $conn->query($places_query)->fetch_array()["postiDisponibili"];
+        $val = $reser["reservations"] + $places;
+
+        $update_query = "UPDATE viaggio
+                SET
+                    postiDisponibili = '{$val}'
+                WHERE
+                    id = '{$_POST["travel"]}'";
+        $res = $conn->query($update_query);
+
+        $remove_query = "DELETE FROM viaggio_utente WHERE id = '{$reser["id"]}';";
+        $res = $conn->query($remove_query);
+
         header("location:../info_user.php");
     }
     ?>

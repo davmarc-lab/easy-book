@@ -15,6 +15,8 @@
     include_once("../../database/dbConnection.php");
     if (isset($_SESSION["id"])) {
         PrintLoginInfo();
+    } else {
+        header("location:../../user/login.php");
     }
     $conn = OpenCon();
     ?>
@@ -34,7 +36,7 @@
                 <tr>
                     <td>Discount Code:</td>
                     <td>
-                        <input type="text" name="code" placeholder="Discount code">
+                        <input type="text" maxlength="10" name="code" placeholder="Discount code">
                     </td>
                 </tr>
             </table>
@@ -42,26 +44,31 @@
             <input type="submit" name="submit" value="Submit">
             <input type="reset" value="Clear">
         </form>
+        <br>
     <?php
     } else {
         $code = $_POST["code"];
-        if (empty($code)) {
-            // generate random discount code
-            $length = 10;
-            $code = "";
-            for ($i = 0; $i < $length; $i++) {
-                if (mt_rand(0, 1)) {
-                    // letter
-                    $char = chr(mt_rand(65, 90));
-                } else {
-                    // number
-                    $char = chr(mt_rand(48, 57));
+        do {
+            if (empty($code)) {
+                // generate random discount code
+                $length = 10;
+                $code = "";
+                for ($i = 0; $i < $length; $i++) {
+                    if (mt_rand(0, 1)) {
+                        // letter
+                        $char = chr(mt_rand(65, 90));
+                    } else {
+                        // number
+                        $char = chr(mt_rand(48, 57));
+                    }
+                    $code .= $char;
                 }
-                $code .= $char;
+                echo ($code);
             }
-            echo ($code);
-        }
-
+            $sel_query = "SELECT * FROM coupon as c WHERE c.codideSconto = '{$code}'";
+            $sel = $conn->query($sel_query);
+        } while ($sel->num_rows > 0);
+        // controlla se gia esiste quel $code, se no rigenera
         $insert_query = "INSERT INTO coupon (codiceSconto, descrizione, id_agenzia)
                 VALUES ('{$code}', '{$_POST["description"]}', {$_SESSION["agency_id"]});";
         $res = $conn->query($insert_query);

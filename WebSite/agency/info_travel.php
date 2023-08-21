@@ -134,9 +134,9 @@
                 </tr>
                 <?php
                 foreach ($vehi as $x) {
-                    echo ("<tr class=\"col\">");
-                    echo ("<td>{$x["tipo"]}</td>");
-                    echo ("<td>{$x["postiDisponibili"]}</td>");
+                    echo ("<tr>");
+                    echo ("<td class=\"col\">{$x["tipo"]}</td>");
+                    echo ("<td class=\"col\">{$x["postiDisponibili"]}</td>");
                     echo ("</tr>");
                 }
                 ?>
@@ -151,56 +151,59 @@
     <br>
     <?php
     if (isset($_SESSION["id"])) {
-        if (!$u_flag) {
     ?>
-            <table>
-                <tr>
-                    <?php
-                    $da = new DateTime($trv["depart"]);
+        <table>
+            <tr>
+                <?php
+                $da = new DateTime($trv["depart"]);
+                if (!$u_flag) {
                     $int = new DateInterval('P2W');
                     $max = $da->sub($int)->format('Y-m-d'); // gap date to modify travel information
 
                     if ($max > date('Y-m-d', time())) {
-                    ?>
+                ?>
                         <td>
                             <form action="operation/manage_travel.php" method="post" style="flex-basis: 70px">
                                 <button name="travel" value="<?php echo ($travel_id); ?>">Manage</button>
                             </form>
                         </td>
+                <?php
+                    }
+                }
+                ?>
+
+                <?php
+                // book if possible
+                if ($da->format('Y-m-d') > date('Y-m-d', time())) {
+                    if (!$u_flag) {
+                ?>
+                        <td>
+                            <form action="operation/remove_travel.php" method="get">
+                                <button name="travel" value="<?php echo ($travel_id); ?>">Remove</button>
+                            </form>
+                        </td>
                     <?php
                     }
                     ?>
-
-                <?php
-            }
-            // book if possible
-            if ($da->format('Y-m-d') > date('Y-m-d', time())) {
-                ?>
-                    <td>
-                        <form action="operation/remove_travel.php" method="get">
-                            <button name="travel" value="<?php echo ($travel_id); ?>">Remove</button>
-                        </form>
-                    </td>
-
                     <td>
                         <form action="../user/operation/book_travel.php" method="get">
                             <button name="travel" value="<?php echo ($travel_id); ?>">Book</button>
                         </form>
                     </td>
                 <?php
-            }
+                }
                 ?>
-                </tr>
-            </table>
-        <?php
+            </tr>
+        </table>
+    <?php
     }
     $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
     echo ("<br><button onclick=\"location.href='info_agency.php?agency={$agency_name}'\">Go back</button>");
-        ?>
-        <footer>
-            <hr>
-            <a href="../index.php">HomePage</a>
-        </footer>
+    ?>
+    <footer>
+        <hr>
+        <a href="../index.php">HomePage</a>
+    </footer>
 </body>
 
 </html>

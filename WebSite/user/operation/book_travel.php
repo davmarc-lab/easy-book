@@ -65,7 +65,14 @@
                         </section>
                     </td>
                 </tr>
+                <tr>
+                    <td>Discount Code:</td>
+                    <td>
+                        <input type="text" name="code" placeholder="Discount code">
+                    </td>
+                </tr>
             </table>
+
             <br>
             <input type="submit" name="submit" value="Book">
             <input type="hidden" name="travel" value="<?php echo ($travel_id); ?>">
@@ -88,12 +95,31 @@
             $error = true;
         }
 
+        // TT
+        $code = $_POST["code"];
+        if (!empty($code)) {
+            $sel_query = "SELECT * FROM coupon as c WHERE c.codiceSconto = '{$code}'";
+            $sel = $conn->query($sel_query);
+            if ($sel->num_rows <= 0) {
+                $error = true;
+                echo ("The discount code doesn't exist.<br>");
+            }
+        }
+
         if ($error) {
             echo ("<br><button onclick=\"location.href='../../agency/info_travel.php?travel={$travel_id}'\">Go back</button>");
         } else {
-            $insert_query = 'INSERT INTO viaggio_utente (numeroPrenotazioni, id_utente, id_viaggio)
+            // TT
+            if (!empty($code)) {
+                // cambia questa query per $code
+                $insert_query = "INSERT INTO viaggio_utente (numeroPrenotazioni, id_utente, id_viaggio, id_coupon)
+                    VALUES('{$_POST["reservation"]}', '{$_SESSION["id"]}', '{$travel_id}'";
+            } else {
+                $insert_query = 'INSERT INTO viaggio_utente (numeroPrenotazioni, id_utente, id_viaggio)
                     VALUES(\'' . $_POST["reservation"] . '\', \'' . $_SESSION["id"] . '\', \'' . $travel_id . '\')';
+            }
             $res = $conn->query($insert_query);
+
             $avail = $places - $_POST["reservation"];
             $update_query = 'UPDATE viaggio
                     SET
