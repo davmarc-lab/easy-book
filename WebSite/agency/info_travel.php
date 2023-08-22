@@ -206,7 +206,7 @@
     <?php
     }
     $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
-    echo ("<br><button onclick=\"location.href='info_agency.php?agency={$agency_name}'\">Go back</button>");
+    echo ("<br><button onclick=\"location.href='info_agency.php?agency={$agency_name}'\">To agency</button>");
     ?>
     <footer>
         <hr>

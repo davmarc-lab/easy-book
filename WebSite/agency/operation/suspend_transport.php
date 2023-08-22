@@ -18,6 +18,7 @@
         header("location:../../user/login.php");
     }
     $conn = OpenCon();
+    $vehi_id = $_GET["vehi"];
     ?>
     <hr>
     <h2>Suspend Transport</h2>
@@ -85,8 +86,7 @@
             $res = $conn->query($insert_query);
         }
     }
-    $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
-    echo ("<br><button onclick=\"location.href='../info_agency.php?agency={$agency_name}'\">Go back</button>");
+    echo ("<br><button onclick=\"location.href='../info_vehicle.php?vehicle={$vehi_id}'\">Go back</button>");
     ?>
     <footer>
         <hr>
