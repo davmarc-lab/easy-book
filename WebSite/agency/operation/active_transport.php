@@ -74,8 +74,7 @@
                 </td>
                 <td>
                     <?php
-                    $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
-                    echo ("<button onclick=\"location.href='../info_agency.php?agency={$agency_name}' \">Go back</button>");
+                    echo ("<button onclick=\"location.href='../info_vehicle.php?vehicle={$_POST["vehicle"]}' \">Go back</button>");
                     ?>
                 </td>
             </tr>
@@ -88,8 +87,7 @@
                 WHERE
                     id = '{$_POST["man"]}';";
         $res = $conn->query($activate_query);
-        $agency_name = str_replace(' ', '+', $_SESSION["agency"]);
-        header("location:../info_agency.php?agency={$agency_name}");
+        header("location:../info_vehicle.php?vehicle={$_POST["transp"]}");
     }
     ?>
     <footer>

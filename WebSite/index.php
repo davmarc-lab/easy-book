@@ -63,7 +63,7 @@
             ?>
                 <td style="text-align: center">
                     <form action="agency/info_agency.php" method="get">
-                        <button style="cursor: pointer;" type="submit" name="agency" value="<?php echo ($r["nome"]); ?>">Go</button>
+                        <button type="submit" name="agency" value="<?php echo ($r["nome"]); ?>">Go</button>
                     </form>
                 </td>
             <?php

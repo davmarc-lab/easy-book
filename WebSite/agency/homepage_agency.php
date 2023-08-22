@@ -60,7 +60,7 @@
                 echo ("<td style=\"text-align: center\">");
             ?>
                 <form action="info_agency.php" method="get">
-                    <button style="cursor: pointer;" name="agency" value="<?php echo ($r["nome"]); ?>">Manage</button>
+                    <button name="agency" value="<?php echo ($r["nome"]); ?>">Manage</button>
                 </form>
             <?php echo ("</td>");
                 echo ("</tr>");
@@ -91,7 +91,7 @@
                 echo ("<td style=\"text-align: center\">");
             ?>
                 <form action="info_agency.php" method="get">
-                    <button style="cursor: pointer;" type="submit" name="agency" value="<?php echo ($r["nome"]); ?>">Go</button>
+                    <button type="submit" name="agency" value="<?php echo ($r["nome"]); ?>">Go</button>
                 </form>
             <?php echo ("</td>");
                 echo ("</tr>");

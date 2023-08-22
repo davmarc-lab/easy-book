@@ -143,7 +143,7 @@
             echo ("<td style=\"text-align: center\">");
         ?>
             <form action="info_travel.php" method="get">
-                <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Info</button>
+                <button name="travel" value="<?php echo ($x["id"]); ?>">Info</button>
             </form>
         <?php
             if (isset($_SESSION["id"]) && $isBookable && $x["postiDisponibili"] > 1) {

@@ -53,12 +53,14 @@
         header("location:login.php");
     }
 
+    $user_id = isset($_POST["user"]) ? $_POST["user"] : $_SESSION["id"];
+
     ?>
     <hr>
     <h2>User Area</h2>
     <h3>Personal Information</h3>
     <?php
-    $user_query = "SELECT * FROM utente as u WHERE u.id = '{$_SESSION["id"]}'";
+    $user_query = "SELECT * FROM utente as u WHERE u.id = '{$user_id}'";
     $user = $conn->query($user_query)->fetch_array();
     ?>
     <div style="display: flex;">
@@ -86,7 +88,7 @@
     <?php
     $travel_query = "SELECT * FROM viaggio as v, viaggio_utente as vu
             WHERE v.id = vu.id_viaggio
-            AND vu.id_utente = '{$_SESSION["id"]}'";
+            AND vu.id_utente = '{$user_id}'";
     $trv = $conn->query($travel_query);
     ?>
     <table style="max-width: 70%">
@@ -101,7 +103,7 @@
         <?php
         $travel_query = "SELECT v.* FROM viaggio as v, viaggio_utente as vu
             WHERE v.id = vu.id_viaggio
-            AND vu.id_utente = '{$_SESSION["id"]}'";
+            AND vu.id_utente = '{$user_id}'";
         $trv = $conn->query($travel_query);
         foreach ($trv as $x) {
             $dest_query = 'SELECT l.nome FROM localita as l, itinerario_localita as il 
@@ -124,7 +126,7 @@
             echo ("<td style=\"text-align: center\">");
         ?>
             <form action="../agency/info_travel.php" method="get">
-                <button style="cursor: pointer;" name="travel" value="<?php echo ($x["id"]); ?>">Info</button>
+                <button name="travel" value="<?php echo ($x["id"]); ?>">Info</button>
             </form>
         <?php
             $da = new DateTime($x["dataPartenza"]);

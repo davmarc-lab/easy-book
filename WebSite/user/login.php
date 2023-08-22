@@ -21,7 +21,7 @@
                 </tr>
                 <tr>
                     <td>Password:</td>
-                    <td><input type="password" placeholder="Password" name="pass" required>
+                    <td><input type="password" maxlength="8" placeholder="Password" name="pass" required>
                         <p>Please max 8 character</p>
                     </td>
                 </tr>
