@@ -172,8 +172,6 @@
                     <form action="../user/info_user.php" method="post">
                         <button type="submit" name="user" value="<?php echo ($x["id"]); ?>">Info</button>
                     </form>
-                </td>
-                <td style="text-align: center">
                     <form action="../admin/operation/remove_user.php" method="post">
                         <button type="submit" name="user" value="<?php echo ($x["id"]); ?>">Remove</button>
                     </form>
