@@ -65,19 +65,22 @@
                 </form>");
         } else {
             // go next, put it in
-            echo ($_POST["date"]);
             if (strlen($_POST["date"]) > 0) {
                 $da = new DateTime($_POST["date"]);
                 $str = $da->format('Y-m-d');
+                $str = "\"{$str}\"";
             } else {
                 $str = "NULL";
             }
-            $update_query = 'UPDATE agenzia_utente
+
+            echo ($str);
+
+            $update_query = "UPDATE agenzia_utente
                     SET
-                        tipoContratto = \'' . $_POST["contract"] . '\',
-                        scadenza = ' . $str . '
+                        tipoContratto = '{$_POST["contract"]}',
+                        scadenza = {$str}
                     WHERE
-                        id = \'' . $_POST["emid"] . '\'';
+                        id = '{$_POST["emid"]}'";
             $res = $conn->query($update_query);
 
             $agency_name = str_replace(' ', '+', $_SESSION["agency"]);

@@ -81,10 +81,10 @@
         echo ("<br><button onclick=\"location.href='../info_vehicle.php?vehicle={$_POST["vehicle"]}'\">Go back</button>");
     } else {
         $start = new DateTime($_POST["start"]);
-        $end = new DateTime($_POST["end"]);
+        $end = empty($_POST["end"]) ? "NULL" : new DateTime($_POST["end"]);
         $error = false;
 
-        if ($end < $start) {
+        if ($end < $start && $end != "NULL") {
             $error = true;
             echo ("Invalid date.<br>");
         }
@@ -110,10 +110,11 @@
             </table>
     <?php
         } else {
+            $str = $end == "NULL" ? $end : "\"{$end->format('Y-m-d')}\"";
             $update_query = "UPDATE manutenzione
                 SET
                     dataInizio = '{$start->format('Y-m-d')}',
-                    dataFine = '{$end->format('Y-m-d')}',
+                    dataFine = {$str},
                     motivo = '{$_POST["reason"]}', 
                     descrizione = '{$_POST["description"]}'
                 WHERE

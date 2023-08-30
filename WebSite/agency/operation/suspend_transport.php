@@ -18,12 +18,12 @@
         header("location:../../user/login.php");
     }
     $conn = OpenCon();
-    $vehi_id = $_GET["vehi"];
     ?>
     <hr>
     <h2>Suspend Transport</h2>
     <?php
     if (!isset($_POST["submit"])) {
+        $vehi_id = $_GET["vehi"];
     ?>
         <form action="<?php echo ($_SERVER["PHP_SELF"]); ?>" method="post">
             <table>
@@ -55,6 +55,7 @@
         $start = $_POST["start"];
         $startDate = new DateTime($start);
         $end = $_POST["end"];
+        $vehi_id = $_POST["vehi"];
 
         if (!empty($_POST["end"])) {
             if ($end < $start) {
@@ -74,7 +75,7 @@
             // unset submit and pass vehicle id
             unset($_POST["submit"]);
             echo ("<br><form action=\"{$_SERVER["PHP_SELF"]}\" method=\"get\"><input type=\"submit\" name=\"submit\" value=\"Retry\">
-                <input type=\"hidden\" name=\"vehi\" value=\"{$_POST["vehi"]}\">
+                <input type=\"hidden\" name=\"vehi\" value=\"{$vehi_id}\">
                 </form>");
         } else {
             $insert_query = "INSERT INTO manutenzione (dataInizio, dataFine, motivo, descrizione) 
@@ -82,7 +83,7 @@
             $res = $conn->query($insert_query);
 
             $last_id = $conn->insert_id;
-            $insert_query = "INSERT INTO mezzo_manutenzione (id_mezzo, id_manutenzione) VALUES ('{$_POST["vehi"]}', '{$last_id}');";
+            $insert_query = "INSERT INTO mezzo_manutenzione (id_mezzo, id_manutenzione) VALUES ('{$vehi_id}', '{$last_id}');";
             $res = $conn->query($insert_query);
         }
     }
