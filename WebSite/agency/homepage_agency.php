@@ -36,9 +36,6 @@
         $conn = OpenCon();
     ?>
         <hr>
-        <?php
-        $owner_query = 'SELECT FROM ';
-        ?>
         <h2>Agency section</h2>
         <h3>Your agencies</h3>
         <table style="min-width: 50%; max-width: 70%">

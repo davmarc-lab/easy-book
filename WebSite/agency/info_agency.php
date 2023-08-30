@@ -32,7 +32,7 @@
     <h1>Easy Book</h1>
     <?php
     /// needed to print different operation for each user, checked by query
-    $o_flag = $e_flag = $u_flag = false;
+    $o_flag = $e_flag = $u_flag = $a_flag = false;
 
     session_start();
     include_once("../database/dbConnection.php");
@@ -59,8 +59,12 @@
                 AND (a.scadenza < CURDATE() OR a.scadenza IS NULL)';
         $em = $conn->query($em_query);
 
+        $admin_query = 'SELECT u.id AS id FROM amministratore AS a, utente AS u WHERE u.id = a.id_utente AND a.dataRitiro IS NULL;';
+        $admin_id = $conn->query($admin_query)->fetch_array()["id"];
+        $a_flag = $admin_id == $_SESSION["id"];
+
         // if owner do operation
-        if ($ow_email == $us_email) {
+        if ($ow_email == $us_email || $a_flag) {
             $o_flag = true;
     ?>
             <h3>Employees</h3>

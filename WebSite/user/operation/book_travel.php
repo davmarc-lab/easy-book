@@ -98,7 +98,9 @@
         // TT
         $code = $_POST["code"];
         if (!empty($code)) {
-            $sel_query = "SELECT * FROM coupon as c WHERE c.codiceSconto = '{$code}'";
+            $ag_query = "SELECT v.id_agenzia FROM viaggio as v WHERE v.id = '{$travel_id}'";
+            $ag = $conn->query($ag_query)->fetch_array()["id_agenzia"];
+            $sel_query = "SELECT * FROM coupon as c WHERE c.codiceSconto = '{$code}' AND c.id_agenzia = '{$ag}'";
             $sel = $conn->query($sel_query);
             if ($sel->num_rows <= 0) {
                 $error = true;
@@ -113,7 +115,7 @@
             if (!empty($code)) {
                 // cambia questa query per $code
                 $insert_query = "INSERT INTO viaggio_utente (numeroPrenotazioni, id_utente, id_viaggio, id_coupon)
-                    VALUES('{$_POST["reservation"]}', '{$_SESSION["id"]}', '{$travel_id}'";
+                    VALUES('{$_POST["reservation"]}', '{$_SESSION["id"]}', '{$travel_id}', '{$sel->fetch_array()["id"]}')";
             } else {
                 $insert_query = 'INSERT INTO viaggio_utente (numeroPrenotazioni, id_utente, id_viaggio)
                     VALUES(\'' . $_POST["reservation"] . '\', \'' . $_SESSION["id"] . '\', \'' . $travel_id . '\')';
