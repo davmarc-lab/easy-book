@@ -43,7 +43,7 @@
     $agency_query = 'SELECT * FROM agenzia AS a WHERE a.nome = \'' . $_GET["agency"] . '\' ;';
     $res = $conn->query($agency_query)->fetch_array();
     $agency = $res["nome"];
-    $ow_email = $res["email"];
+    $ow_id = $res["id_utente"];
     $id_agency = $res["id"];
     $_SESSION["agency_id"] = $id_agency;
     echo ("<hr><h2>{$agency}</h2>");
@@ -51,7 +51,7 @@
     if (isset($_SESSION["id"])) {
         $us_query = 'SELECT * FROM utente AS u WHERE u.id = \'' . $_SESSION["id"] . '\';';
         $us = $conn->query($us_query)->fetch_array();
-        $us_email = $us["email"];
+        $us_id = $us["id"];
 
         $em_query = 'SELECT * FROM agenzia_utente as a
                 WHERE a.id_agenzia = \'' . $id_agency . '\'
@@ -64,7 +64,7 @@
         $a_flag = $admin_id == $_SESSION["id"];
 
         // if owner do operation
-        if ($ow_email == $us_email || $a_flag) {
+        if ($ow_id == $us_id || $a_flag) {
             $o_flag = true;
     ?>
             <h3>Employees</h3>

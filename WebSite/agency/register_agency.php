@@ -12,15 +12,9 @@
     <h1>Easy Book</h1>
     <?php
     session_start();
+    include_once("../database/dbConnection.php");
     if (isset($_SESSION["id"])) {
-    ?>
-        <div class="login">
-            <?php
-            echo ("Hello " . $_SESSION["name"] . " | <a href=\"./homepage_agency.php\">Agencies</a> | <a href=\"../user/logout.php\">Logout</a>");
-            ?>
-        </div>
-        <hr>
-    <?php
+        PrintLoginInfo();
     } else {
     ?>
         <div class="login">
@@ -49,10 +43,6 @@
                 <tr>
                     <td>Telephone Number:</td>
                     <td><input type="text" placeholder="Include prefix" name="tel"></td>
-                </tr>
-                <tr>
-                    <td>Email:</td>
-                    <td><input type="email" placeholder="Email" name="email" required></td>
                 </tr>
             </table>
             <input type="submit" name="submit" value="Confirm">
@@ -93,14 +83,13 @@
                         <br>Example: +01 0123456789<br>");
             $error = true;
         }
-        $email = $_POST["email"];
 
         if ($error == true) {
             echo ("<a href=\"register_agency.php\">Go back</a><br>");
             echo ("<a href=\"../index.php\">Home Page</a><br>");
         } else {
-            $insert_query = 'INSERT INTO agenzia (nome, proprietario, sedeFisica, telefono, email)
-                        VALUES(\'' . $name . '\', \'' . $owner . '\', \'' . $city . '\', \'' . $tel . '\', \'' . $email . '\');';
+            $insert_query = 'INSERT INTO agenzia (nome, proprietario, sedeFisica, telefono, id_utente)
+                        VALUES(\'' . $name . '\', \'' . $owner . '\', \'' . $city . '\', \'' . $tel . '\', \'' . $_SESSION["id"] . '\');';
             $mysql->query($insert_query);
             echo ("Agency signed correctly. You can now <a href=\"../index.php\">Go back</a><br>");
         }

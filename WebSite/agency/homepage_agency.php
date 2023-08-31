@@ -46,8 +46,9 @@
                 <th>Link</th>
             </tr>
             <?php
-            $query = 'SELECT *, (SELECT COUNT(v.id) FROM viaggio as v WHERE v.id_agenzia = a.id) AS nt FROM agenzia AS a 
-                                WHERE a.email = (SELECT email FROM utente AS u WHERE u.id = \'' . $_SESSION["id"] . '\')';
+            $query = "SELECT *, (SELECT COUNT(v.id) FROM viaggio as v WHERE v.id_agenzia = a.id) AS nt
+                    FROM agenzia AS a 
+                    WHERE a.id_utente = {$_SESSION["id"]}";
             $res = $conn->query($query);
             foreach ($res as $r) {
                 echo ("<tr>");
