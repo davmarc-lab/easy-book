@@ -56,7 +56,7 @@
         $em_query = 'SELECT * FROM agenzia_utente as a
                 WHERE a.id_agenzia = \'' . $id_agency . '\'
                 AND a.id_utente = \'' . $_SESSION["id"] . '\'
-                AND (a.scadenza < CURDATE() OR a.scadenza IS NULL)';
+                AND (a.scadenza > CURDATE() OR a.scadenza IS NULL)';
         $em = $conn->query($em_query);
 
         $admin_query = 'SELECT u.id AS id FROM amministratore AS a, utente AS u WHERE u.id = a.id_utente AND a.dataRitiro IS NULL;';
