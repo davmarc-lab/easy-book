@@ -68,7 +68,7 @@
                 $user = $conn->query($user_query)->fetch_array();
                 $travels_query = "SELECT COUNT(v.id) as num FROM viaggio_utente as v WHERE v.id_utente = '{$_POST["user"]}'";
                 $travels = $conn->query($travels_query)->fetch_array();
-                $agency_query = "SELECT COUNT(a.id) as num FROM agenzia as a WHERE a.email = '{$user["email"]}'";
+                $agency_query = "SELECT COUNT(a.id) as num FROM agenzia as a WHERE a.id_utente = '{$user["id"]}'";
                 $agency = $conn->query($agency_query)->fetch_array();
                 ?>
                 <td><?php echo ($user["nome"]); ?></td>
@@ -107,7 +107,7 @@
             $res = $conn->query($delete_query);
         }
 
-        $remove_query = "DELETE FROM agenzia as a WHERE a.email = '{$user_email}'";
+        $remove_query = "DELETE FROM agenzia as a WHERE a.id_utente = '{$user_id}'";
         $res = $conn->query($remove_query);
 
         $remove_query = "DELETE FROM utente as u WHERE u.id = '{$user_id}'";

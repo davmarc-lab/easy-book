@@ -65,7 +65,7 @@
                 }
                 echo ($code);
             }
-            $sel_query = "SELECT * FROM coupon as c WHERE c.codideSconto = '{$code}'";
+            $sel_query = "SELECT * FROM coupon as c WHERE c.codiceSconto = '{$code}'";
             $sel = $conn->query($sel_query);
         } while ($sel->num_rows > 0);
         // controlla se gia esiste quel $code, se no rigenera

@@ -85,6 +85,7 @@
             $last_id = $conn->insert_id;
             $insert_query = "INSERT INTO mezzo_manutenzione (id_mezzo, id_manutenzione) VALUES ('{$vehi_id}', '{$last_id}');";
             $res = $conn->query($insert_query);
+            header("location:../info_vehicle.php?vehicle={$vehi_id}");
         }
     }
     echo ("<br><button onclick=\"location.href='../info_vehicle.php?vehicle={$vehi_id}'\">Go back</button>");

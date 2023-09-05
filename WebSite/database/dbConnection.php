@@ -29,7 +29,7 @@ function PrintLoginInfo()
         }
 
         $agency_query = "SELECT a.id FROM agenzia as a
-                WHERE a.email = (SELECT u.email FROM utente as u WHERE u.id = '{$_SESSION["id"]}');";
+                WHERE a.id_utente = '{$_SESSION["id"]}';";
         $res = $conn->query($agency_query);
         if ($res->num_rows > 0) {
             echo (" | <a href=\"{$HOME_FOLDER}agency/homepage_agency.php\">Agency</a>");

@@ -47,10 +47,8 @@
         $admin_query = "SELECT a.id_utente as id FROM amministratore as a WHERE a.id = (SELECT MAX(s.id) FROM amministratore as s)";
         $adid = $conn->query($admin_query)->fetch_array()["id"];
 
-        $owner_query = "SELECT a.email as email FROM agenzia as a WHERE a.id = '{$_SESSION["agency_id"]}'";
-        $owemail = $conn->query($owner_query)->fetch_array()["email"];
-        $owid_query = "SELECT u.id FROM utente as u WHERE u.email = '$owemail'";
-        $owid = $conn->query($owid_query)->fetch_array()["id"];
+        $owner_query = "SELECT a.id_utente as id FROM agenzia as a WHERE a.id = '{$_SESSION["agency_id"]}'";
+        $ow_id = $conn->query($owner_query)->fetch_array()["id"];
 
         $em_query = 'SELECT * FROM agenzia_utente as a
                 WHERE a.id_agenzia = \'' . $_SESSION["agency_id"] . '\'
@@ -58,7 +56,7 @@
                 AND (a.scadenza < CURDATE() OR a.scadenza IS NULL)';
         $em = $conn->query($em_query);
 
-        if ($_SESSION["id"] == $owid) {
+        if ($_SESSION["id"] == $ow_id) {
             $o_flag = true;
         } else if ($em->num_rows > 0) {
             $e_flag = true;

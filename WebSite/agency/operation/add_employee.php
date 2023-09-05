@@ -55,23 +55,23 @@
             <?php
             $ag_query = 'SELECT * FROM agenzia AS a WHERE a.nome = \'' . $_SESSION["agency"] . '\'';
             $ag = $conn->query($ag_query)->fetch_array();
-            $ow_email = $ag["email"];
+            $ow_id = $ag["id_utente"];
             $ag_id = $_SESSION["agency_id"];
 
-            $email_query = 'SELECT u.email FROM utente AS u WHERE u.id = \'' . $_SESSION["id"] . '\'';
-            $curr_email = $conn->query($email_query)->fetch_array();
-            $curr_email = $curr_email["email"];             //
+            $sel_query = 'SELECT u.id FROM utente AS u WHERE u.id = \'' . $_SESSION["id"] . '\'';
+            $sel = $conn->query($sel_query)->fetch_array();
+            $us_id = $sel["id"];
 
-            $empl_query = 'SELECT u.id AS id, u.nome AS nome, u.cognome AS cognome, u.email AS email, (SELECT COUNT(a.id) FROM agenzia_utente AS a WHERE a.id_utente = u.id) AS num,
-                            (SELECT COUNT(a.id) FROM agenzia AS a WHERE a.email = u.email) AS own
-                        FROM utente AS u, agenzia_utente AS au, agenzia AS a
-                        WHERE u.id NOT IN (SELECT au.id_utente FROM agenzia_utente AS au, utente as us WHERE us.id = au.id_utente AND au.id_agenzia = \'' . $ag_id . '\')
-                        AND u.id != \'' . $_SESSION["id"] . '\'
-                        AND u.email != \'' . $curr_email . '\'
-                        AND u.email != \'' . $ow_email . '\'
-                        GROUP BY u.id;';
+            $empl_query = "SELECT u.id AS id, u.nome AS nome, u.cognome AS cognome, u.email as email, (SELECT COUNT(au.id) FROM agenzia_utente as au WHERE au.id_utente = u.id) as num,
+                            (SELECT COUNT(ag.id) FROM agenzia as ag WHERE ag.id_utente = u.id) as own
+                        FROM utente AS u, agenzia as a
+                        WHERE a.id_utente != u.id
+                        AND u.id NOT IN (SELECT au.id_utente
+                            FROM agenzia_utente as au, utente as p
+                            WHERE au.id_utente = p.id AND (CURDATE() > au.scadenza OR au.scadenza IS NULL)
+                            )
+                        GROUP BY u.id;";
             $res = $conn->query($empl_query);
-
             foreach ($res as $r) {
                 echo ("<tr>");
                 echo ("<td>" . $r["nome"] . "</td>");
@@ -88,6 +88,7 @@
             }
             ?>
     </table>
+    <br>
     <input type="submit" value="Submit">
     <input type="reset" value="Clear">
     </form>
