@@ -3,7 +3,7 @@ $HOME_FOLDER = "/easy-book/WebSite/";
 
 function OpenCon()
 {
-    $conn = new mysqli("127.0.0.1", "root", "password", "easycopy") or die("Connection failed: %s\n" . $conn->error);
+    $conn = new mysqli("127.0.0.1", "root", "password", "easybook") or die("Connection failed: %s\n" . $conn->error);
     return $conn;
 }
 
