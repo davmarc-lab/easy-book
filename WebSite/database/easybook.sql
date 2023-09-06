@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 25, 2023 at 06:40 PM
+-- Generation Time: Sep 06, 2023 at 03:42 PM
 -- Server version: 8.0.34-0ubuntu0.22.04.1
--- PHP Version: 8.1.2-1ubuntu2.13
+-- PHP Version: 8.1.2-1ubuntu2.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,26 +29,21 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `agenzia` (
   `id` int NOT NULL,
-  `nome` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `nome` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `proprietario` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `sedeFisica` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `telefono` varchar(14) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL
+  `telefono` varchar(14) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_utente` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `agenzia`
 --
 
-INSERT INTO `agenzia` (`id`, `nome`, `proprietario`, `sedeFisica`, `telefono`, `email`) VALUES
-(1, 'VACation s.r.l', 'Speranza Siciliano', 'Canicattì', '+39 0357243361', 'speranza.siciliano@mail.it'),
-(2, 'WonderQuest Tours', 'Matteo Marino', '', '+39 2148760426', 'matteo.marino@mail.it'),
-(3, 'Horizon Hoppers', 'Beatrice Fontana', '', '+39 1903052606', 'beatrice.fontana@mail.it'),
-(4, 'Sentieri della Meraviglia', 'Tommaso Grassi', 'Santorini', '+39 1295971253', 'tommaso.grassi@mail.it'),
-(5, 'WanderWisdom Trips', 'Emanuele Marra', 'Roma', '+39 5547690157', 'emanuele.marra@mail.it'),
-(6, 'Euphoric Adventures', 'Sofia Benedetti', 'Ancona', '+39 7461212435', 'sofia.benedetti@mail.it'),
-(7, 'Eco Journay', 'Luigi Bianchi', '', '', 'luigi.bianchi1@mail.it'),
-(8, 'Agency For Fun', 'Davide Marchetti', '', '', 'davide.marchetti@mail.it');
+INSERT INTO `agenzia` (`id`, `nome`, `proprietario`, `sedeFisica`, `telefono`, `id_utente`) VALUES
+(9, 'Eco Jurnay', 'Luigi Bianchi', 'Milano', '', 14),
+(10, ' Info Agency', 'Davide Marchetti', '', '', 1),
+(11, 'EasyTravel', 'Marco Sinto', '', '', 15);
 
 -- --------------------------------------------------------
 
@@ -69,8 +64,14 @@ CREATE TABLE `agenzia_utente` (
 --
 
 INSERT INTO `agenzia_utente` (`id`, `tipoContratto`, `scadenza`, `id_agenzia`, `id_utente`) VALUES
-(2, 'determinato', '2023-08-25', 7, 10),
-(7, 'indeterminato', NULL, 7, 1);
+(8, 'indeterminato', NULL, 9, 1),
+(11, 'indeterminato', NULL, 10, 4),
+(12, 'determinato', '2024-04-11', 10, 6),
+(14, 'determinato', '2025-08-31', 9, 15),
+(16, 'determinato', '2025-06-05', 11, 8),
+(17, 'a chiamata', '2024-08-31', 11, 9),
+(18, 'indeterminato', NULL, 9, 9),
+(19, 'indeterminato', NULL, 10, 14);
 
 -- --------------------------------------------------------
 
@@ -100,7 +101,7 @@ INSERT INTO `amministratore` (`id`, `dataDebutto`, `dataRitiro`, `id_utente`) VA
 
 CREATE TABLE `coupon` (
   `id` int NOT NULL,
-  `codiceSconto` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `codiceSconto` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `descrizione` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `id_agenzia` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -110,25 +111,7 @@ CREATE TABLE `coupon` (
 --
 
 INSERT INTO `coupon` (`id`, `codiceSconto`, `descrizione`, `id_agenzia`) VALUES
-(1, 'K0Z04DSL1W', 'Prova inserimento primo coupon', 7);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `insdata`
---
-
-CREATE TABLE `insdata` (
-  `inizio` date NOT NULL,
-  `fine` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
---
--- Dumping data for table `insdata`
---
-
-INSERT INTO `insdata` (`inizio`, `fine`) VALUES
-('2023-08-21', '2023-08-31');
+(2, '69149X255D', 'Codice sconto prima prenotazione.', 9);
 
 -- --------------------------------------------------------
 
@@ -155,7 +138,10 @@ INSERT INTO `itinerario` (`id`, `descrizione`) VALUES
 (7, 'Prova modifica'),
 (12, 'Giro turistico per Ascoli Piceno e dintorni'),
 (13, 'Giro turistico ascoli storica e san benedetto.'),
-(14, 'Spend one week at New York.');
+(14, 'Spend one week at New York.'),
+(15, 'Giro turistuco per Ascoli Piceno e San Benedetto del Tronto'),
+(16, 'Fine settimana visitando la germania del nord.'),
+(17, 'Natale in america.');
 
 -- --------------------------------------------------------
 
@@ -191,7 +177,13 @@ INSERT INTO `itinerario_localita` (`id`, `id_localita`, `id_itinerario`) VALUES
 (96, 1, 12),
 (100, 1, 13),
 (101, 66, 13),
-(102, 76, 14);
+(102, 76, 14),
+(105, 1, 15),
+(106, 66, 15),
+(107, 27, 16),
+(108, 77, 16),
+(109, 78, 16),
+(110, 76, 17);
 
 -- --------------------------------------------------------
 
@@ -282,7 +274,9 @@ INSERT INTO `localita` (`id`, `nome`, `stato`, `continente`) VALUES
 (73, 'Nizza', NULL, NULL),
 (74, 'Marsiglia', NULL, NULL),
 (75, 'Cannes', NULL, NULL),
-(76, 'New York', NULL, NULL);
+(76, 'New York', NULL, NULL),
+(77, 'Amburgo', NULL, NULL),
+(78, 'Brema', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -303,10 +297,7 @@ CREATE TABLE `manutenzione` (
 --
 
 INSERT INTO `manutenzione` (`id`, `dataInizio`, `dataFine`, `motivo`, `descrizione`) VALUES
-(1, '2023-08-21', '2023-08-24', '', ''),
-(2, '2023-08-15', '2023-08-18', NULL, NULL),
-(3, '2023-08-14', '2023-08-18', 'revisione', 'Revisione ogni due anni.'),
-(4, '2023-08-16', '2023-08-18', '', '');
+(5, '2023-08-31', '2023-09-02', 'manutenzione annuale', '');
 
 -- --------------------------------------------------------
 
@@ -316,7 +307,7 @@ INSERT INTO `manutenzione` (`id`, `dataInizio`, `dataFine`, `motivo`, `descrizio
 
 CREATE TABLE `mezzo` (
   `id` int NOT NULL,
-  `tipo` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `tipo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `annoImmatricolazione` year NOT NULL,
   `postiDisponibili` int NOT NULL,
   `id_agenzia` int NOT NULL
@@ -327,20 +318,9 @@ CREATE TABLE `mezzo` (
 --
 
 INSERT INTO `mezzo` (`id`, `tipo`, `annoImmatricolazione`, `postiDisponibili`, `id_agenzia`) VALUES
-(1, 'pullman', 1984, 75, 7),
-(2, 'auto', 1993, 82, 7),
-(3, 'nave', 1988, 91, 7),
-(4, 'pullman', 2015, 74, 7),
-(5, 'taxi', 1988, 63, 7),
-(6, 'taxi', 1992, 76, 7),
-(7, 'aereo', 1983, 77, 7),
-(9, 'nave', 1987, 100, 7),
-(10, 'auto', 1990, 85, 7),
-(11, 'auto', 2006, 6, 7),
-(12, 'pullman', 1999, 100, 7),
-(14, 'barca', 2020, 200, 7),
-(15, 'bus', 2022, 23, 8),
-(16, 'car', 2000, 99, 8);
+(17, 'bus', 2001, 150, 9),
+(18, 'barca', 2000, 200, 9),
+(19, 'aereo', 2020, 70, 11);
 
 -- --------------------------------------------------------
 
@@ -359,9 +339,7 @@ CREATE TABLE `mezzo_manutenzione` (
 --
 
 INSERT INTO `mezzo_manutenzione` (`id`, `id_mezzo`, `id_manutenzione`) VALUES
-(1, 2, 1),
-(2, 15, 2),
-(3, 14, 3);
+(5, 17, 5);
 
 -- --------------------------------------------------------
 
@@ -371,10 +349,10 @@ INSERT INTO `mezzo_manutenzione` (`id`, `id_mezzo`, `id_manutenzione`) VALUES
 
 CREATE TABLE `utente` (
   `id` int NOT NULL,
-  `nome` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
-  `cognome` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
+  `nome` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `cognome` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `telefono` varchar(14) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `email` tinytext COLLATE utf8mb4_general_ci NOT NULL,
+  `email` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -387,7 +365,6 @@ INSERT INTO `utente` (`id`, `nome`, `cognome`, `telefono`, `email`, `password`) 
 (2, 'Isabella', 'Orlando', '+39 3712376030', 'isabella.orlando@mail.it', '$2y$10$6pTMszDclmLJ.OWAUcPoVufvlqb4Q6/crO0r3wi8jt.HifZ/HB2WC'),
 (3, 'Matteo', 'Parisi', '+39 3406977990', 'matteo.parisi@mail.it', '$2y$10$f.5UGUBMyDw6ZU/bHgVJl.SRqKDZHq9Q2yu460khd/M9uHUAHvJzW'),
 (4, 'Sofia', 'Basile', '+39 3565631249', 'sofia.basile@mail.it', '$2y$10$/z5iyoGCeAxEL1I8kfUCSePB7AS5rQbrxvvbquYMJykpklQylB7dS'),
-(5, 'Enea', 'Marino', '+39 3282344449', 'enea.marino@mail.it', '$2y$10$ZalKNW4DajzTSOk2znwv8.Jm5Hw.0ZeOwX9luzkP/WMWfphXuYN8O'),
 (6, 'Martina', 'Rossetti', '+39 3985543509', 'martina.rossetti@mail.it', '$2y$10$SKqon1p//BtruSlGm2RVTesZPU79o8EIM3FeAgcV1dSOMBw1ElF7a'),
 (7, 'Carlotta', 'Serra', '+39 3282570875', 'carlotta.serra@mail.it', '$2y$10$TqeiObRgDpL3GC7cqFhVPe48nEbnbpXa4Izj6qmTprABaiUJHTRtu'),
 (8, 'Matteo', 'Bianchi', '+39 3113021183', 'matteo.bianchi@mail.it', '$2y$10$Ubk/YZSOXdyR.YPi62789../fecIuXd.hMfiKXW2DZU.5nYgY4utK'),
@@ -420,11 +397,9 @@ CREATE TABLE `viaggio` (
 --
 
 INSERT INTO `viaggio` (`id`, `postiDisponibili`, `dataPartenza`, `dataArrivo`, `prezzo`, `id_agenzia`, `id_itinerario`) VALUES
-(1, 100, '2023-08-01', '2023-08-11', 50, 7, 5),
-(2, 130, '2023-08-11', '2023-08-25', 200, 7, 6),
-(3, 297, '2023-08-11', '2023-08-22', 150, 7, 7),
-(8, 96, '2023-09-05', '2023-09-06', 75, 7, 13),
-(9, 99, '2023-10-10', '2023-10-17', 750, 8, 14);
+(10, 98, '2023-10-04', '2023-10-07', 40, 9, 15),
+(11, 100, '2024-01-03', '2024-01-06', 300, 9, 16),
+(12, 50, '2023-12-20', '2023-12-27', 700, 11, 17);
 
 -- --------------------------------------------------------
 
@@ -443,15 +418,9 @@ CREATE TABLE `viaggio_mezzo` (
 --
 
 INSERT INTO `viaggio_mezzo` (`id`, `id_viaggio`, `id_mezzo`) VALUES
-(30, 1, 6),
-(31, 1, 7),
-(32, 2, 4),
-(33, 2, 10),
-(37, 3, 9),
-(38, 3, 1),
-(39, 3, 14),
-(45, 8, 12),
-(46, 9, 15);
+(48, 10, 17),
+(49, 11, 17),
+(50, 12, 19);
 
 -- --------------------------------------------------------
 
@@ -472,8 +441,8 @@ CREATE TABLE `viaggio_utente` (
 --
 
 INSERT INTO `viaggio_utente` (`id`, `numeroPrenotazioni`, `id_utente`, `id_viaggio`, `id_coupon`) VALUES
-(5, 4, 1, 8, NULL),
-(8, 1, 1, 9, NULL);
+(9, 1, 14, 10, NULL),
+(10, 1, 1, 10, NULL);
 
 --
 -- Indexes for dumped tables
@@ -483,7 +452,8 @@ INSERT INTO `viaggio_utente` (`id`, `numeroPrenotazioni`, `id_utente`, `id_viagg
 -- Indexes for table `agenzia`
 --
 ALTER TABLE `agenzia`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_utente` (`id_utente`);
 
 --
 -- Indexes for table `agenzia_utente`
@@ -588,13 +558,13 @@ ALTER TABLE `viaggio_utente`
 -- AUTO_INCREMENT for table `agenzia`
 --
 ALTER TABLE `agenzia`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `agenzia_utente`
 --
 ALTER TABLE `agenzia_utente`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `amministratore`
@@ -606,43 +576,43 @@ ALTER TABLE `amministratore`
 -- AUTO_INCREMENT for table `coupon`
 --
 ALTER TABLE `coupon`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `itinerario`
 --
 ALTER TABLE `itinerario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `itinerario_localita`
 --
 ALTER TABLE `itinerario_localita`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
 
 --
 -- AUTO_INCREMENT for table `localita`
 --
 ALTER TABLE `localita`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT for table `manutenzione`
 --
 ALTER TABLE `manutenzione`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `mezzo`
 --
 ALTER TABLE `mezzo`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `mezzo_manutenzione`
 --
 ALTER TABLE `mezzo_manutenzione`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `utente`
@@ -654,23 +624,29 @@ ALTER TABLE `utente`
 -- AUTO_INCREMENT for table `viaggio`
 --
 ALTER TABLE `viaggio`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `viaggio_mezzo`
 --
 ALTER TABLE `viaggio_mezzo`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `viaggio_utente`
 --
 ALTER TABLE `viaggio_utente`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `agenzia`
+--
+ALTER TABLE `agenzia`
+  ADD CONSTRAINT `agenzia_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `agenzia_utente`
